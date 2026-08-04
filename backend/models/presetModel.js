@@ -22,6 +22,7 @@ const presetSchema = new mongoose.Schema({
   presetFile: {
     type: String,
     required: [true, "Preset file is required"],
+    select: false,
   },
 });
 
