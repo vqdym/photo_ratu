@@ -10,7 +10,12 @@ router.use("/:presetId/order", orderRouter);
 router
   .route("/")
   .get(presetController.getAllPresets)
-  .post(authController.protect, presetController.createPreset);
+  .post(
+    authController.protect,
+    presetController.uploadPresetFiles,
+    presetController.setPresetFilesToBody,
+    presetController.createPreset,
+  );
 
 router
   .route("/:id")

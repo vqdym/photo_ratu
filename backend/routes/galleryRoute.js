@@ -7,7 +7,12 @@ const router = express.Router();
 router
   .route("/")
   .get(galleryController.getAllPhotos)
-  .post(authController.protect, galleryController.createPhoto);
+  .post(
+    authController.protect,
+    galleryController.uploadGalleryPhoto,
+    galleryController.resizeGalleryPhoto,
+    galleryController.createPhoto,
+  );
 router
   .route("/:id")
   .delete(authController.protect, galleryController.deletePhoto)
