@@ -3,6 +3,9 @@ import multer from 'multer';
 
 import Preset from '../models/presetModel';
 import AppError from '../utils/appError';
+import cloudinary from '../utils/cloudinary';
+import { uploadToS3 } from '../utils/s3';
+import catchAsync from '../utils/catchAsync';
 import {
   getAll,
   getOne,
@@ -11,23 +14,7 @@ import {
   createOne,
 } from './handlerFactory';
 
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    if (file.fieldname === 'imageAfter' || file.fieldname === 'imageBefore') {
-      cb(null, 'public/img/presets');
-    } else if (file.fieldname === 'presetFile') {
-      cb(null, 'public/presets');
-    }
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split('.').pop();
-    let prefix = 'preset-file';
-    if (file.fieldname === 'imageAfter') prefix = 'preset-img-after';
-    if (file.fieldname === 'imageBefore') prefix = 'preset-img-before';
-    cb(null, `${prefix}-${Date.now()}.${ext}`);
-  },
-});
-
+const multerStorage = multer.memoryStorage();
 const multerFilter = (
   req: Request,
   file: Express.Multer.File,
@@ -68,22 +55,62 @@ export const uploadPresetFiles = upload.fields([
   { name: 'presetFile', maxCount: 1 },
 ]);
 
-export const setPresetFilesToBody = (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const files = req.files as {
-    [fieldname: string]: Express.Multer.File[];
-  };
-
-  if (files) {
-    if (files.imageAfter) req.body.imageAfter = files.imageAfter[0].filename;
-    if (files.imageBefore) req.body.imageBefore = files.imageBefore[0].filename;
-    if (files.presetFile) req.body.presetFile = files.presetFile[0].filename;
-  }
-  next();
+const uploadToCloudinary = (
+  buffer: Buffer,
+  folder: string,
+  resourceType: 'image' | 'auto' = 'image',
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        resource_type: resourceType,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result!.secure_url);
+      },
+    );
+    stream.end(buffer);
+  });
 };
+
+export const setPresetFilesToBody = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files) return next();
+
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+
+    if (files.imageBefore) {
+      req.body.imageBefore = await uploadToCloudinary(
+        files.imageBefore[0].buffer,
+        'photo_ratu/presets/images',
+      );
+    }
+    if (files.imageAfter) {
+      req.body.imageAfter = await uploadToCloudinary(
+        files.imageAfter[0].buffer,
+        'photo_ratu/presets/images',
+      );
+    }
+
+    if (files.presetFile) {
+      const ext = files.presetFile[0].originalname.split('.').pop();
+      const fileName = `preset-${Date.now()}.${ext}`;
+
+      await uploadToS3(
+        files.presetFile[0].buffer,
+        fileName,
+        files.presetFile[0].mimetype,
+      );
+
+      req.body.presetFile = fileName;
+    }
+    next();
+  },
+);
 
 export const getAllPresets = getAll(Preset);
 export const createPreset = createOne(Preset);

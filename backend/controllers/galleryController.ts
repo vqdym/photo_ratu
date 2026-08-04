@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import Gallery from '../models/galleryModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
+import cloudinary from '../utils/cloudinary';
 import {
   getAll,
   createOne,
@@ -12,6 +13,7 @@ import {
   getOne,
   updateOne,
 } from './handlerFactory';
+import { resolve } from 'node:dns';
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (
@@ -34,16 +36,28 @@ const upload = multer({
 export const uploadGalleryPhoto = upload.single('photo');
 export const resizeGalleryPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-  req.file.filename = `gallery-${Date.now()}.jpeg`;
 
-  await sharp(req.file.buffer)
+  const buffer = await sharp(req.file.buffer)
     .resize(1200, 800)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/gallery/${req.file.filename}`);
+    .toBuffer();
 
-  req.body.imageUrl = req.file.filename;
-
+  const uploadPromise = new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'photo_ratu/gallery',
+        public_id: `gallery-${Date.now()}`,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      },
+    );
+    stream.end(buffer);
+  });
+  const result: any = await uploadPromise;
+  req.body.imageUrl = result.secure_url;
   next();
 });
 

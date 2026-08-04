@@ -10,6 +10,7 @@ import adminRouter from './routes/adminRoute';
 import galleryRouter from './routes/galleryRoute';
 import presetRouter from './routes/presetRoute';
 import orderRouter from './routes/orderRoute';
+import serviceRouter from './routes/serviceRoute';
 import globalErrorHandler from './controllers/errorController';
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/api/v1/admin', adminRouter);
 app.use('/api/v1/gallery', galleryRouter);
 app.use('/api/v1/preset', presetRouter);
 app.use('/api/v1/order', orderRouter);
+app.use('/api/v1/service', serviceRouter);
 
 app.all(/(.*)/, (req: Request, res: Response, next: NextFunction) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
