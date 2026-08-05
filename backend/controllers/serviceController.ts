@@ -1,17 +1,19 @@
 import { Request, Response, NextFunction } from 'express';
-import sharp from 'sharp';
 import multer from 'multer';
 
 import Service from '../models/serviceModel';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
-import cloudinary from '../utils/cloudinary';
+import processAndUploadImage from '../utils/processAndUploadImage';
 import {
   getAll,
   createOne,
   deleteOne,
   getOne,
   updateOne,
+  deleteCloudinaryPhoto,
+  updateCloudinaryPhoto,
+  checkImageData,
 } from './handlerFactory';
 
 const multerStorage = multer.memoryStorage();
@@ -37,27 +39,11 @@ export const resizeServicePhoto = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     if (!req.file) return next();
 
-    const buffer = await sharp(req.file.buffer)
-      .resize(1200, 800)
-      .toFormat('jpeg')
-      .jpeg({ quality: 90 })
-      .toBuffer();
-
-    const uploadPromise = new Promise((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'photo_ratu/services',
-          public_id: `service-${Date.now()}`,
-        },
-        (error, result) => {
-          if (error) return reject(error);
-          resolve(result);
-        },
-      );
-      stream.end(buffer);
-    });
-    const result: any = await uploadPromise;
-    req.body.imageUrl = result.secure_url;
+    req.body.imageUrl = await processAndUploadImage(
+      req.file.buffer,
+      'photo_ratu/service',
+      'service',
+    );
     next();
   },
 );
@@ -67,3 +53,6 @@ export const createService = createOne(Service);
 export const deleteService = deleteOne(Service);
 export const getServiceById = getOne(Service);
 export const updateService = updateOne(Service);
+export const deleteServicePhotoFromCloudinary = deleteCloudinaryPhoto(Service);
+export const updateServicePhotoOnCloudinary = updateCloudinaryPhoto(Service);
+export const checkServiceData = checkImageData(Service);

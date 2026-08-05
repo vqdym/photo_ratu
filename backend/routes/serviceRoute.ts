@@ -8,6 +8,9 @@ import {
   updateService,
   uploadServicePhoto,
   resizeServicePhoto,
+  deleteServicePhotoFromCloudinary,
+  updateServicePhotoOnCloudinary,
+  checkServiceData,
 } from '../controllers/serviceController';
 
 const router = express.Router();
@@ -15,11 +18,22 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllServices)
-  .post(protect, uploadServicePhoto, resizeServicePhoto, createService);
+  .post(
+    protect,
+    uploadServicePhoto,
+    checkServiceData,
+    resizeServicePhoto,
+    createService,
+  );
 router
   .route('/:id')
-  .delete(protect, deleteService)
+  .delete(protect, deleteServicePhotoFromCloudinary, deleteService)
   .get(getServiceById)
-  .patch(protect, updateService);
+  .patch(
+    protect,
+    uploadServicePhoto,
+    updateServicePhotoOnCloudinary,
+    updateService,
+  );
 
 export default router;

@@ -12,8 +12,11 @@ import {
   deleteOne,
   getOne,
   updateOne,
+  deleteCloudinaryPhoto,
+  checkImageData,
+  updateCloudinaryPhoto,
 } from './handlerFactory';
-import { resolve } from 'node:dns';
+import processAndUploadImage from '../utils/processAndUploadImage';
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (
@@ -37,27 +40,11 @@ export const uploadGalleryPhoto = upload.single('photo');
 export const resizeGalleryPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  const buffer = await sharp(req.file.buffer)
-    .resize(1200, 800)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toBuffer();
-
-  const uploadPromise = new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder: 'photo_ratu/gallery',
-        public_id: `gallery-${Date.now()}`,
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result);
-      },
-    );
-    stream.end(buffer);
-  });
-  const result: any = await uploadPromise;
-  req.body.imageUrl = result.secure_url;
+  req.body.imageUrl = await processAndUploadImage(
+    req.file.buffer,
+    'photo_ratu/gallery',
+    'service',
+  );
   next();
 });
 
@@ -66,3 +53,6 @@ export const createPhoto = createOne(Gallery);
 export const deletePhoto = deleteOne(Gallery);
 export const getPhotoById = getOne(Gallery);
 export const updatePhoto = updateOne(Gallery);
+export const deletePhotoFromCloudinary = deleteCloudinaryPhoto(Gallery);
+export const updateGalleryPhotoOnCloudinary = updateCloudinaryPhoto(Gallery);
+export const checkGalleryData = checkImageData(Gallery);

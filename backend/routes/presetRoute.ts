@@ -7,6 +7,7 @@ import {
   deletePreset,
   getPresetById,
   updatePreset,
+  updatePresetImagesAndFile,
 } from '../controllers/presetController';
 import { protect } from '../controllers/authController';
 import orderRouter from './orderRoute';
@@ -24,6 +25,6 @@ router
   .route('/:id')
   .delete(protect, deletePreset)
   .get(getPresetById)
-  .patch(protect, updatePreset);
+  .patch(protect, uploadPresetFiles, updatePresetImagesAndFile, updatePreset);
 
 export default router;

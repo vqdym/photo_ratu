@@ -10,7 +10,7 @@ dotenv.config({ path: './config.env' });
 
 const region = process.env.S3_ENDPOINT?.split('.')[1] || 'us-east-001';
 
-const s3 = new S3Client({
+export const s3 = new S3Client({
   endpoint: `https://${process.env.S3_ENDPOINT}`,
   region: region,
   credentials: {

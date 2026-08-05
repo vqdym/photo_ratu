@@ -4,6 +4,8 @@ import { Model, PopulateOptions } from 'mongoose';
 import apiFeatures from '../utils/apiFeatures';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
+import cloudinary from '../utils/cloudinary';
+import processAndUploadImage from '../utils/processAndUploadImage';
 
 export const deleteOne = <T>(Model: Model<T>) =>
   catchAsync(async (req, res, next) => {
@@ -90,4 +92,77 @@ export const getAll = <T>(Model: Model<T>) =>
         data: doc,
       },
     });
+  });
+
+interface HasImageUrl {
+  imageUrl: string;
+}
+export const deleteCloudinaryPhoto = <T extends HasImageUrl>(Model: Model<T>) =>
+  catchAsync(async (req, res, next) => {
+    const photo = await Model.findById(req.params.id);
+    if (!photo) {
+      return next(new AppError('Photo not found', 404));
+    }
+
+    const splittedPath = photo?.imageUrl.split('/');
+    const index = splittedPath?.indexOf('photo_ratu');
+
+    if (index === -1) {
+      return next(new AppError('Invalid Cloudinary URL', 400));
+    }
+
+    const publicId = splittedPath
+      ?.slice(index)
+      .join('/')
+      .replace(/\.[^.]+$/, '');
+    await cloudinary.uploader.destroy(publicId);
+    next();
+  });
+
+export const updateCloudinaryPhoto = <T extends HasImageUrl>(Model: Model<T>) =>
+  catchAsync(async (req, res, next) => {
+    if (!req.file) return next();
+    const photo = await Model.findById(req.params.id);
+    if (!photo) {
+      return next(new AppError('Photo not found', 404));
+    }
+
+    const splittedPath = photo?.imageUrl.split('/');
+    const index = splittedPath?.indexOf('photo_ratu');
+
+    if (index === -1) {
+      return next(new AppError('Invalid Cloudinary URL', 400));
+    }
+
+    const publicId = splittedPath
+      ?.slice(index)
+      .join('/')
+      .replace(/\.[^.]+$/, '');
+
+    await cloudinary.uploader.destroy(publicId);
+
+    req.body.imageUrl = await processAndUploadImage(
+      req.file?.buffer,
+      `photo_ratu/${Model.modelName.toLowerCase()}`,
+      Model.modelName.toLowerCase(),
+    );
+
+    next();
+  });
+
+export const checkImageData = <T extends HasImageUrl>(Model: Model<T>) =>
+  catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.name) {
+      const existingService = await Model.findOne({ name: req.body.name });
+
+      if (existingService) {
+        return next(
+          new AppError(
+            `${Model.modelName} with this name already exists!`,
+            400,
+          ),
+        );
+      }
+    }
+    next();
   });
