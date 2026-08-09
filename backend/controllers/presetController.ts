@@ -3,7 +3,6 @@ import multer from 'multer';
 
 import Preset from '../models/presetModel';
 import AppError from '../utils/appError';
-import cloudinary from '../utils/cloudinary';
 import { uploadToS3, s3 } from '../utils/s3';
 import catchAsync from '../utils/catchAsync';
 import { DeleteObjectCommand, PutObjectCommand } from '@aws-sdk/client-s3';
@@ -11,11 +10,10 @@ import {
   getAll,
   getOne,
   updateOne,
-  deleteOne,
   createOne,
-  deleteCloudinaryPhoto,
+  processAndUploadImage,
+  deleteFromCloudinary,
 } from './handlerFactory';
-import processAndUploadImage from '../utils/processAndUploadImage';
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (
@@ -24,7 +22,7 @@ const multerFilter = (
   cb: multer.FileFilterCallback,
 ) => {
   if (
-    (file.fieldname === 'imageAfter' || file.fieldname === 'imageBefore') &&
+    (file.fieldname === 'beforeImages' || file.fieldname === 'afterImages') &&
     !file.mimetype.startsWith('image')
   ) {
     return cb(new AppError('Please upload only images for cover!', 400));
@@ -37,7 +35,7 @@ const multerFilter = (
     if (!ext || !allowedExt.includes(ext)) {
       return cb(
         new AppError(
-          'Invalid preset file format! Upload .zip, .rar, .dng, or .xmp',
+          'Invalid preset file format! Upload .zip, .rar, .dng, .7z or .xmp',
           400,
         ),
       );
@@ -52,31 +50,11 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-export const uploadPresetFiles = upload.fields([
-  { name: 'imageBefore', maxCount: 1 },
-  { name: 'imageAfter', maxCount: 1 },
+export const uploadPresetData = upload.fields([
   { name: 'presetFile', maxCount: 1 },
+  { name: 'beforeImages', maxCount: 20 },
+  { name: 'afterImages', maxCount: 20 },
 ]);
-
-const uploadToCloudinary = (
-  buffer: Buffer,
-  folder: string,
-  resourceType: 'image' | 'auto' = 'image',
-): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream(
-      {
-        folder,
-        resource_type: resourceType,
-      },
-      (error, result) => {
-        if (error) return reject(error);
-        resolve(result!.secure_url);
-      },
-    );
-    stream.end(buffer);
-  });
-};
 
 export const setPresetFilesToBody = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -85,19 +63,6 @@ export const setPresetFilesToBody = catchAsync(
     const files = req.files as {
       [fieldname: string]: Express.Multer.File[];
     };
-
-    if (files.imageBefore) {
-      req.body.imageBefore = await uploadToCloudinary(
-        files.imageBefore[0].buffer,
-        'photo_ratu/presets/images',
-      );
-    }
-    if (files.imageAfter) {
-      req.body.imageAfter = await uploadToCloudinary(
-        files.imageAfter[0].buffer,
-        'photo_ratu/presets/images',
-      );
-    }
 
     if (files.presetFile) {
       const ext = files.presetFile[0].originalname.split('.').pop();
@@ -109,23 +74,48 @@ export const setPresetFilesToBody = catchAsync(
         files.presetFile[0].mimetype,
       );
 
-      req.body.presetFile = fileName;
+      req.body.presetFileUrl = fileName;
+    }
+
+    if (files.beforeImages && files.afterImages) {
+      if (files.beforeImages.length !== files.afterImages.length) {
+        return next(
+          new AppError(
+            'The number of "before" and "after" photos must be the same!',
+            400,
+          ),
+        );
+      }
+
+      req.body.examples = [];
+
+      await Promise.all(
+        files.beforeImages.map(async (beforeFile, index) => {
+          const afterFile = files.afterImages[index];
+
+          const [beforeUrl, afterUrl] = await Promise.all([
+            processAndUploadImage(
+              beforeFile.buffer,
+              'photo_ratu/presets/images',
+              `before-${Date.now()}-${index}`,
+            ),
+            processAndUploadImage(
+              afterFile.buffer,
+              'photo_ratu/presets/images',
+              `after-${Date.now()}-${index}`,
+            ),
+          ]);
+
+          req.body.examples.push({
+            beforeImage: beforeUrl,
+            afterImage: afterUrl,
+          });
+        }),
+      );
     }
     next();
   },
 );
-
-async function deleteImage(image: string) {
-  const splitted = image.split('/');
-  const index = splitted.indexOf('photo_ratu');
-  if (index !== -1) {
-    const publicId = splitted
-      .slice(index)
-      .join('/')
-      .replace(/\.[^.]+$/, '');
-    await cloudinary.uploader.destroy(publicId);
-  }
-}
 
 export const deletePreset = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -134,12 +124,13 @@ export const deletePreset = catchAsync(
       return next(new AppError('Preset not found', 404));
     }
 
-    if (preset.imageBefore) {
-      await deleteImage(preset.imageBefore);
-    }
-
-    if (preset.imageAfter) {
-      await deleteImage(preset.imageAfter);
+    if (preset.examples && preset.examples.length > 0) {
+      await Promise.all(
+        preset.examples.map(async (example) => {
+          await deleteFromCloudinary(example.beforeImage);
+          await deleteFromCloudinary(example.afterImage);
+        }),
+      );
     }
 
     if (preset.presetFile) {
@@ -161,30 +152,95 @@ export const deletePreset = catchAsync(
 
 export const updatePresetImagesAndFile = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    if (!req.files) return next();
-
     const preset = await Preset.findById(req.params.id);
-    if (!preset) return next(new AppError('Preset not found.', 400));
+    if (!preset) return next(new AppError('Preset not found.', 404));
 
+    if (!req.files && !req.body.deletedExamples && !req.body.presetFile) {
+      return next();
+    }
+
+    // Беремо поточні фотографії з бази
+    let currentExamples = preset.examples || [];
+
+    // ==========================================
+    // 1. ВИДАЛЕННЯ СТАРИХ ПАР (Якщо фронтенд просить)
+    // ==========================================
+    if (req.body.deletedExamples) {
+      // У form-data масиви об'єктів зазвичай передаються як JSON-рядок, тому парсимо його
+      const examplesToDelete =
+        typeof req.body.deletedExamples === 'string'
+          ? JSON.parse(req.body.deletedExamples)
+          : req.body.deletedExamples;
+
+      // Видаляємо фотки з Cloudinary
+      await Promise.all(
+        examplesToDelete.map(
+          async (example: { beforeImage: string; afterImage: string }) => {
+            if (example.beforeImage)
+              await deleteFromCloudinary(example.beforeImage);
+            if (example.afterImage)
+              await deleteFromCloudinary(example.afterImage);
+          },
+        ),
+      );
+
+      // Видаляємо ці пари з нашого масиву (щоб вони зникли з БД)
+      currentExamples = currentExamples.filter(
+        (ex) =>
+          !examplesToDelete.some(
+            (del: any) => del.beforeImage === ex.beforeImage,
+          ),
+      );
+    }
+
+    // ==========================================
+    // 2. ДОДАВАННЯ НОВИХ ПАР
+    // ==========================================
     const files = req.files as { [fieldname: string]: Express.Multer.File[] };
-    if (files.imageBefore) {
-      if (preset.imageBefore) await deleteImage(preset.imageBefore);
-      req.body.imageBefore = await processAndUploadImage(
-        files.imageBefore[0].buffer,
-        'photo_ratu/presets/images',
-        'preset',
-      );
-    }
-    if (files.imageAfter) {
-      if (preset.imageAfter) await deleteImage(preset.imageAfter);
+    let newExamples: { beforeImage: string; afterImage: string }[] = [];
 
-      req.body.imageAfter = await processAndUploadImage(
-        files.imageAfter[0].buffer,
-        'photo_ratu/presets',
-        'preset',
+    if (files && files.beforeImages && files.afterImages) {
+      if (files.beforeImages.length !== files.afterImages.length) {
+        return next(
+          new AppError(
+            'The number of "before" and "after" photos must be the same!',
+            400,
+          ),
+        );
+      }
+
+      await Promise.all(
+        files.beforeImages.map(async (beforeFile, index) => {
+          const afterFile = files.afterImages[index];
+
+          const [beforeUrl, afterUrl] = await Promise.all([
+            processAndUploadImage(
+              beforeFile.buffer,
+              'photo_ratu/presets/images',
+              `before-${Date.now()}-${index}`,
+            ),
+            processAndUploadImage(
+              afterFile.buffer,
+              'photo_ratu/presets/images',
+              `after-${Date.now()}-${index}`,
+            ),
+          ]);
+
+          newExamples.push({
+            beforeImage: beforeUrl,
+            afterImage: afterUrl,
+          });
+        }),
       );
     }
-    if (files.presetFile) {
+
+    // Об'єднуємо те, що залишилося після видалення, з тим, що щойно додали
+    req.body.examples = [...currentExamples, ...newExamples];
+
+    // ==========================================
+    // 3. ОНОВЛЕННЯ ZIP-АРХІВУ (S3)
+    // ==========================================
+    if (files && files.presetFile) {
       if (preset.presetFile) {
         await s3.send(
           new DeleteObjectCommand({
@@ -204,8 +260,10 @@ export const updatePresetImagesAndFile = catchAsync(
           ContentType: files.presetFile[0].mimetype,
         }),
       );
+
       req.body.presetFile = newFileName;
     }
+
     next();
   },
 );

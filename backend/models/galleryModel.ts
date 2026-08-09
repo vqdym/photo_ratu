@@ -1,24 +1,27 @@
 import mongoose from 'mongoose';
 
 export interface IGallery {
-  imageUrl: string;
-  altText: string;
-  category: string;
+  title: string;
+  coverImage: string;
+  category: 'individual' | 'wedding' | 'family' | 'couple' | 'commercial';
+  images: string[];
   createdAt: Date;
 }
 
-const gallerySchema = new mongoose.Schema<IGallery>({
-  imageUrl: {
+const gallerySchema = new mongoose.Schema({
+  title: {
     type: String,
-    required: [true, 'Image URL is required'],
+    required: [true, 'The photoshoot must have a title.'],
+    trim: true,
   },
-  altText: {
+  coverImage: {
     type: String,
-    default: 'Photo for portfolio',
+    required: [true, 'The photoshoot needs a cover.'],
   },
+  images: [String],
   category: {
     type: String,
-    default: 'All',
+    enum: ['individual', 'wedding', 'family', 'couple', 'commercial'],
   },
   createdAt: {
     type: Date,
@@ -26,6 +29,7 @@ const gallerySchema = new mongoose.Schema<IGallery>({
   },
 });
 
-const Gallery = mongoose.model<IGallery>('Gallery', gallerySchema);
+const Gallery =
+  mongoose.models.Gallery || mongoose.model<IGallery>('Gallery', gallerySchema);
 
 export default Gallery;

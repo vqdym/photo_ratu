@@ -1,15 +1,14 @@
 import express from 'express';
 import {
-  uploadGalleryPhoto,
-  resizeGalleryPhoto,
+  uploadGalleryImages,
+  resizeGalleryPhotos,
   createPhoto,
   getAllPhotos,
   deletePhoto,
   getPhotoById,
   updatePhoto,
-  deletePhotoFromCloudinary,
-  updateGalleryPhotoOnCloudinary,
-  checkGalleryData,
+  deleteGalleryPhotosFromCloudinary,
+  cleanupOldGalleryPhotos,
 } from '../controllers/galleryController';
 import { protect } from '../controllers/authController';
 
@@ -18,21 +17,17 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllPhotos)
-  .post(
-    protect,
-    uploadGalleryPhoto,
-    checkGalleryData,
-    resizeGalleryPhoto,
-    createPhoto,
-  );
+  .post(protect, uploadGalleryImages, resizeGalleryPhotos, createPhoto);
+
 router
   .route('/:id')
-  .delete(protect, deletePhotoFromCloudinary, deletePhoto)
+  .delete(protect, deleteGalleryPhotosFromCloudinary, deletePhoto)
   .get(getPhotoById)
   .patch(
     protect,
-    uploadGalleryPhoto,
-    updateGalleryPhotoOnCloudinary,
+    uploadGalleryImages,
+    resizeGalleryPhotos,
+    cleanupOldGalleryPhotos,
     updatePhoto,
   );
 

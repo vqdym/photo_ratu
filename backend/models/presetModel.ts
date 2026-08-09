@@ -2,35 +2,40 @@ import mongoose from 'mongoose';
 
 export interface IPreset {
   name: string;
-  description: string;
+  description?: string;
   price: number;
-  imageBefore: string;
-  imageAfter: string;
-  presetFile?: string;
+  presetFile?: string; // <-- Змінили downloadLink на presetFile
+  examples: {
+    beforeImage: string;
+    afterImage: string;
+  }[];
+  createdAt: Date;
 }
 
-const presetSchema = new mongoose.Schema<IPreset>({
+const presetSchema = new mongoose.Schema({
   name: {
     type: String,
-    required: [true, 'Preset name is required'],
-    unique: true,
+    required: [true, 'Write the name of the preset pack.'],
+    trim: true,
   },
   description: String,
   price: {
     type: Number,
-    required: [true, 'Preset price is required'],
-  },
-  imageBefore: {
-    type: String,
-    required: [true, 'Image before is required'],
-  },
-  imageAfter: {
-    type: String,
-    required: [true, 'Image after is required'],
+    required: [true, 'Specify the price'],
   },
   presetFile: {
+    // <-- Змінили тут також
     type: String,
-    required: [true, 'Preset file is required'],
+  },
+  examples: [
+    {
+      beforeImage: { type: String, required: true },
+      afterImage: { type: String, required: true },
+    },
+  ],
+  createdAt: {
+    type: Date,
+    default: Date.now,
   },
 });
 

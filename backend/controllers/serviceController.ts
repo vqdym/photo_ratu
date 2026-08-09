@@ -4,7 +4,6 @@ import multer from 'multer';
 import Service from '../models/serviceModel';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
-import processAndUploadImage from '../utils/processAndUploadImage';
 import {
   getAll,
   createOne,
@@ -12,6 +11,7 @@ import {
   getOne,
   updateOne,
   deleteCloudinaryPhoto,
+  processAndUploadImage,
   updateCloudinaryPhoto,
   checkImageData,
 } from './handlerFactory';

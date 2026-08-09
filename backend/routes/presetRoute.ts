@@ -1,7 +1,7 @@
 import express from 'express';
 import {
   getAllPresets,
-  uploadPresetFiles,
+  uploadPresetData,
   setPresetFilesToBody,
   createPreset,
   deletePreset,
@@ -19,12 +19,12 @@ router.use('/:presetId/order', orderRouter);
 router
   .route('/')
   .get(getAllPresets)
-  .post(protect, uploadPresetFiles, setPresetFilesToBody, createPreset);
+  .post(protect, uploadPresetData, setPresetFilesToBody, createPreset);
 
 router
   .route('/:id')
   .delete(protect, deletePreset)
   .get(getPresetById)
-  .patch(protect, uploadPresetFiles, updatePresetImagesAndFile, updatePreset);
+  .patch(protect, uploadPresetData, updatePresetImagesAndFile, updatePreset);
 
 export default router;

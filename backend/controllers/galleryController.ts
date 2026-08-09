@@ -1,22 +1,18 @@
-import { Request } from 'express';
 import multer from 'multer';
-import sharp from 'sharp';
+import { Request, Response, NextFunction } from 'express';
 
 import Gallery from '../models/galleryModel';
 import catchAsync from '../utils/catchAsync';
 import AppError from '../utils/appError';
-import cloudinary from '../utils/cloudinary';
 import {
   getAll,
   createOne,
   deleteOne,
   getOne,
   updateOne,
-  deleteCloudinaryPhoto,
-  checkImageData,
-  updateCloudinaryPhoto,
+  deleteFromCloudinary,
+  processAndUploadImage,
 } from './handlerFactory';
-import processAndUploadImage from '../utils/processAndUploadImage';
 
 const multerStorage = multer.memoryStorage();
 const multerFilter = (
@@ -36,23 +32,99 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-export const uploadGalleryPhoto = upload.single('photo');
-export const resizeGalleryPhoto = catchAsync(async (req, res, next) => {
-  if (!req.file) return next();
+export const uploadGalleryImages = upload.fields([
+  { name: 'coverImage', maxCount: 1 },
+  { name: 'images', maxCount: 50 },
+]);
 
-  req.body.imageUrl = await processAndUploadImage(
-    req.file.buffer,
-    'photo_ratu/gallery',
-    'service',
-  );
-  next();
-});
+export const resizeGalleryPhotos = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files) return next();
+
+    const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+
+    if (files.coverImage) {
+      req.body.coverImage = await processAndUploadImage(
+        files.coverImage[0].buffer,
+        'photo_ratu/gallery',
+        'cover',
+      );
+    }
+
+    if (files.images) {
+      req.body.images = [];
+      await Promise.all(
+        files.images.map(async (file, i) => {
+          const url = await processAndUploadImage(
+            file.buffer,
+            'photo_ratu/gallery',
+            `gallery-${Date.now()}-${i}`,
+          );
+          req.body.images.push(url);
+        }),
+      );
+    }
+
+    next();
+  },
+);
+
+export const deleteGalleryPhotosFromCloudinary = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Gallery.findById(req.params.id);
+    if (!doc) {
+      return next(new AppError('Photo collection not found', 404));
+    }
+
+    if (doc.coverImage) {
+      await deleteFromCloudinary(doc.coverImage);
+    }
+
+    if (doc.images && doc.images.length > 0) {
+      await Promise.all(
+        doc.images.map((imgUrl: string) => deleteFromCloudinary(imgUrl)),
+      );
+    }
+
+    next();
+  },
+);
+
+export const cleanupOldGalleryPhotos = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const doc = await Gallery.findById(req.params.id);
+    if (!doc) {
+      return next(new AppError('Photo collection not found', 404));
+    }
+    if (req.body.coverImage && doc.coverImage) {
+      await deleteFromCloudinary(doc.coverImage);
+    }
+
+    if (req.body.images) {
+      req.body.images = [...doc.images, ...req.body.images];
+    }
+
+    if (req.body.deletedImages) {
+      const imagesToDelete = Array.isArray(req.body.deletedImages)
+        ? req.body.deletedImages
+        : [req.body.deletedImages];
+
+      await Promise.all(
+        imagesToDelete.map((url: string) => deleteFromCloudinary(url)),
+      );
+
+      const currentImages = req.body.images ? req.body.images : doc.images;
+      req.body.images = currentImages.filter(
+        (url: string) => !imagesToDelete.includes(url),
+      );
+    }
+
+    next();
+  },
+);
 
 export const getAllPhotos = getAll(Gallery);
 export const createPhoto = createOne(Gallery);
 export const deletePhoto = deleteOne(Gallery);
 export const getPhotoById = getOne(Gallery);
 export const updatePhoto = updateOne(Gallery);
-export const deletePhotoFromCloudinary = deleteCloudinaryPhoto(Gallery);
-export const updateGalleryPhotoOnCloudinary = updateCloudinaryPhoto(Gallery);
-export const checkGalleryData = checkImageData(Gallery);

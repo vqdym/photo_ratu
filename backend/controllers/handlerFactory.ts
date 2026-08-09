@@ -5,7 +5,7 @@ import apiFeatures from '../utils/apiFeatures';
 import AppError from '../utils/appError';
 import catchAsync from '../utils/catchAsync';
 import cloudinary from '../utils/cloudinary';
-import processAndUploadImage from '../utils/processAndUploadImage';
+import sharp from 'sharp';
 
 export const deleteOne = <T>(Model: Model<T>) =>
   catchAsync(async (req, res, next) => {
@@ -79,9 +79,10 @@ export const getAll = <T>(Model: Model<T>) =>
       .filter()
       .sort()
       .category()
+      .limitFields()
+      .limit()
       .paginate();
 
-    // const doc = await features.query.explain();
     const doc = await features.query;
 
     // SEND RESPONSE
@@ -118,6 +119,44 @@ export const deleteCloudinaryPhoto = <T extends HasImageUrl>(Model: Model<T>) =>
     await cloudinary.uploader.destroy(publicId);
     next();
   });
+
+export const deleteFromCloudinary = async (url: string) => {
+  const splittedPath = url.split('/');
+  const index = splittedPath.indexOf('photo_ratu');
+  if (index !== -1) {
+    const publicId = splittedPath
+      .slice(index)
+      .join('/')
+      .replace(/\.[^.]+$/, '');
+    await cloudinary.uploader.destroy(publicId);
+  }
+};
+
+export const processAndUploadImage = async (
+  buffer: Buffer,
+  folder: string,
+  prefix: string,
+): Promise<string> => {
+  const processedBuffer = await sharp(buffer)
+    .resize(1200, 800)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toBuffer();
+
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        folder,
+        public_id: `${prefix}-${Date.now()}`,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result!.secure_url);
+      },
+    );
+    stream.end(processedBuffer);
+  });
+};
 
 export const updateCloudinaryPhoto = <T extends HasImageUrl>(Model: Model<T>) =>
   catchAsync(async (req, res, next) => {

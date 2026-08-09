@@ -11,7 +11,7 @@ class APIFeatures<T> {
 
   filter() {
     const queryObj = Object.assign({}, this.queryString);
-    const excludedFields = ['page', 'sort', 'limit', 'fields'];
+    const excludedFields = ['page', 'sort', 'limit', 'fields', 'first'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
     // 1B) Advanced Filtering
@@ -20,6 +20,16 @@ class APIFeatures<T> {
     // console.log(JSON.parse(queryStr));
 
     this.query = this.query.find(JSON.parse(queryStr));
+    return this;
+  }
+
+  // Додай цей метод у клас APIFeatures
+  limitFields() {
+    const fields = this.getString(this.queryString.fields);
+    if (fields) {
+      const fieldsBy = fields.split(',').join(' ');
+      this.query = this.query.select(fieldsBy);
+    }
     return this;
   }
 
@@ -44,6 +54,15 @@ class APIFeatures<T> {
       this.query = this.query.find({
         category: category.split(',').join(' '),
       });
+    }
+    return this;
+  }
+
+  limit() {
+    const first = this.getString(this.queryString.first);
+    if (first) {
+      const limitNumber = parseInt(first, 10);
+      this.query = this.query.limit(limitNumber);
     }
     return this;
   }
