@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import PortfolioGallery from "../../../components/PortfolioGallery";
-import PortfolioHeader from "../../../components/PortfolioHeader";
-import Spinner from "../../../components/Spinner";
+import PortfolioGallery from "../../components/PortfolioGallery";
+import PortfolioHeader from "../../components/PortfolioHeader";
+import Spinner from "../../components/Spinner";
 import { getDictionary } from "@/dictionaries";
 import DictProps from "@/types/DictProps";
 

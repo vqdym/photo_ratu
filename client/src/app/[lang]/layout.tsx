@@ -1,9 +1,9 @@
 import { getDictionary } from "../../dictionaries";
 import { Montserrat } from "next/font/google";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-import "./globals.css";
+import "../_styles/globals.css";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],

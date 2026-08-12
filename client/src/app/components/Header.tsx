@@ -1,5 +1,5 @@
 "use client";
-import { getDictionary } from "../dictionaries";
+import { getDictionary } from "../../dictionaries";
 import { useState, useLayoutEffect } from "react";
 import { usePathname } from "next/navigation";
 import Logo from "./Logo";

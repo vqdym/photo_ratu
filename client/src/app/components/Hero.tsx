@@ -1,5 +1,7 @@
 import { Montserrat } from "next/font/google";
 import HeroImage from "./HeroImage";
+import { jwtCookie, logoutAdmin } from "@/app/_lib/actions/auth";
+import LogoutButton from "./LogoutButton";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -18,21 +20,20 @@ interface HeroProps {
   };
 }
 
-export default function Hero({ dict }: HeroProps) {
+export default async function Hero({ dict }: HeroProps) {
+  const isAdmin = await jwtCookie();
   return (
     <section
       className={`${montserrat.className} relative h-screen w-full flex items-center pb-20 md:pb-32 px-6 md:px-16 bg-[#0a1912]`}
     >
       <HeroImage />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-end gap-10 text-[#faf8f5] animate-fade-up-advanced">
-        <div className="max-w-2xl">
+      <div className="relative z-10 w-full max-w-7xl mx-auto text-[#faf8f5] animate-fade-up-advanced">
+        <div className="relative max-w-2xl">
           <p className="text-[10px] tracking-[0.4em] uppercase text-[#e6dfd5] mb-6 drop-shadow-md">
             {dict.hero.subtitle}
           </p>
-          <h1
-            className={`text-5xl md:text-8xl leading-[1.1] mb-6 drop-shadow-lg`}
-          >
+          <h1 className="text-5xl md:text-8xl leading-[1.1] mb-6 drop-shadow-lg">
             {dict.hero.titleLine1} <br />
             <span className="italic text-[#e6dfd5]">
               {dict.hero.titleLine2}
@@ -41,6 +42,8 @@ export default function Hero({ dict }: HeroProps) {
           <p className="text-sm md:text-base text-white/90 tracking-wider max-w-md leading-relaxed drop-shadow-md">
             {dict.hero.description}
           </p>
+
+          {isAdmin && <LogoutButton />}
         </div>
       </div>
     </section>

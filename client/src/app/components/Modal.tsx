@@ -1,0 +1,136 @@
+"use client";
+
+import {
+  cloneElement,
+  createContext,
+  ReactElement,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { createPortal } from "react-dom";
+
+interface ModalContextType {
+  openName: string;
+  close: () => void;
+  open: (name: string) => void;
+}
+
+export const ModalContext = createContext<ModalContextType | null>(null);
+
+export default function Modal({ children }: { children: ReactNode }) {
+  const [openName, setOpenName] = useState("");
+
+  const close = () => setOpenName("");
+  const open = (name: string) => setOpenName(name);
+
+  return (
+    <ModalContext.Provider value={{ openName, close, open }}>
+      {children}
+    </ModalContext.Provider>
+  );
+}
+
+function Open({
+  children,
+  opens: opensWindowName,
+}: {
+  children: ReactElement<{ onClick?: () => void }>;
+  opens: string;
+}) {
+  const context = useContext(ModalContext);
+
+  if (!context) {
+    throw new Error("Modal.Open must be used within a Modal");
+  }
+
+  return cloneElement(children, {
+    onClick: () => context.open(opensWindowName),
+  });
+}
+
+function Close({
+  children,
+}: {
+  children: ReactElement<{ onClick?: () => void }>;
+}) {
+  const context = useContext(ModalContext);
+  if (!context) {
+    throw new Error("Modal.Open must be used within a Modal");
+  }
+
+  return cloneElement(children, {
+    onClick: () => context.close(),
+  });
+}
+
+function Window({ children, name }: { children: ReactNode; name: string }) {
+  const context = useContext(ModalContext);
+
+  useEffect(() => {
+    if (!context || context.openName !== name) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        context.close();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [context, name]);
+
+  if (!context) {
+    throw new Error("Modal.Window must be used within a Modal");
+  }
+
+  if (context.openName !== name) {
+    return null;
+  }
+
+  return createPortal(
+    <div
+      onClick={(e) => {
+        if (e.target === e.currentTarget) {
+          context.close();
+        }
+      }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-espresso-950/50 backdrop-blur-sm p-4"
+    >
+      <button
+        type="button"
+        onClick={context.close}
+        aria-label="Закрити"
+        className="absolute top-6 right-6 text-beige-100 hover:text-white transition-colors cursor-pointer"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="w-8 h-8"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
+        </svg>
+      </button>
+
+      <div className="relative max-h-screen max-w-7xl w-full flex justify-center items-center">
+        {children}
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+Modal.Open = Open;
+Modal.Close = Close;
+Modal.Window = Window;

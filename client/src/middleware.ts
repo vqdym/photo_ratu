@@ -11,11 +11,21 @@ export function middleware(request: NextRequest) {
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`,
   );
 
-  if (pathnameHasLocale) return;
+  if (!pathnameHasLocale) {
+    request.nextUrl.pathname = `/${defaultLocale}${pathname}`;
+    return NextResponse.redirect(request.nextUrl);
+  }
 
-  request.nextUrl.pathname = `/${defaultLocale}${pathname}`;
+  const token = request.cookies.get("jwt")?.value;
 
-  return NextResponse.redirect(request.nextUrl);
+  const isAuthPage = pathname.endsWith("/loginAdmin");
+
+  if (isAuthPage && token) {
+    const currentLocale = pathname.split("/")[1];
+    return NextResponse.redirect(new URL(`/${currentLocale}`, request.url));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
