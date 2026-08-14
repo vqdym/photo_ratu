@@ -14,12 +14,14 @@ export default function LightboxSlider({
   initialIndex,
 }: LightboxSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [prevInitialIndex, setPrevInitialIndex] = useState(initialIndex);
 
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
-  useEffect(() => {
+  if (initialIndex !== prevInitialIndex) {
+    setPrevInitialIndex(initialIndex);
     setCurrentIndex(initialIndex);
-  }, [initialIndex]);
+  }
 
   useEffect(() => {
     if (thumbnailRefs.current[currentIndex]) {
@@ -33,7 +35,6 @@ export default function LightboxSlider({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      //   console.log(e.key);
       if (e.key === "ArrowRight" || e.key === "d") {
         setCurrentIndex((prev) => (prev + 1) % images.length);
       }

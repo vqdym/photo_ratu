@@ -1,7 +1,6 @@
 "use server";
 import axios from "axios";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { cache } from "react";
 import { getJWT } from "./actions/auth";
 
@@ -74,6 +73,54 @@ export const deleteGallery = async function (id: string) {
     revalidatePath("/");
   } catch (err: any) {
     console.error("Помилка deleteGallery:", err.response?.data || err.message);
+  }
+};
+
+export const editGallery = async (
+  id: string,
+  photos: string[],
+  deletedUrls: string[],
+) => {
+  try {
+    const token = await getJWT();
+    const res = await axios.patch(
+      `${process.env.API_URL}/gallery/${id}/manage-photos`,
+      {
+        images: photos,
+        deletedImages: deletedUrls,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return res.data;
+  } catch (err: any) {
+    console.error("Помилка editGallery:", err.response?.data || err.message);
+    throw err;
+  }
+};
+
+export const addNewPhotosToGallery = async (id: string, formData: FormData) => {
+  try {
+    const token = await getJWT();
+    const res = await axios.patch(
+      `${process.env.API_URL}/gallery/${id}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return res.data;
+  } catch (err: any) {
+    console.error("Помилка editGallery:", err.response?.data || err.message);
+    throw err;
+  } finally {
+    revalidatePath(`/portfolio/${id}`);
   }
 };
 

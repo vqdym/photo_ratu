@@ -16,7 +16,7 @@ interface PortfolioFormValues {
 }
 
 export default function AddNewPortfolioModal() {
-  const [isPending, startTransition] = useTransition();
+  const [isPending] = useTransition();
   const { register, handleSubmit, watch, reset, setValue, getValues } =
     useForm<PortfolioFormValues>();
   const closeRef = useRef<HTMLButtonElement>(null);
@@ -45,7 +45,6 @@ export default function AddNewPortfolioModal() {
         formData.append("images", file);
       });
     }
-
     startTransition(async () => {
       try {
         await createGallery(formData);
@@ -247,7 +246,11 @@ export default function AddNewPortfolioModal() {
             </div>
 
             <div className="flex gap-4 justify-end pt-4 border-t border-black/5 mt-8">
-              <Button style="default" disabled={true} type="submit">
+              <Button
+                style="default"
+                disabled={isPending ? true : false}
+                type="submit"
+              >
                 {isPending ? <SpinnerMini /> : "Зберегти"}
               </Button>
               <Modal.Close>

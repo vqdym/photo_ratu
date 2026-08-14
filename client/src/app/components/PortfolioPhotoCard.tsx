@@ -2,7 +2,7 @@ import Image from "next/image";
 import { Photosession } from "../../types/Portfolio";
 import Link from "next/link";
 import { categoryLabels } from "@/utils/categoryLabels";
-import DeleteButton from "./DeleteButtonMini";
+import DeleteButton from "./DeleteGallery";
 import { jwtCookie } from "../_lib/actions/auth";
 
 export default async function PortfolioPhotoCard({

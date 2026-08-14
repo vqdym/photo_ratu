@@ -2,6 +2,8 @@ import BackButton from "@/app/components/BackButton";
 
 import PortfolioItemPageHeader from "@/app/components/PortfolioItemPageHeader";
 import PortfolioItemPageImagesList from "@/app/components/PortfolioItemPageImagesList";
+import SpinnerMini from "@/app/components/SpinnerMini";
+import { Suspense } from "react";
 
 export default async function PortfolioItemPage({
   params,
@@ -18,7 +20,18 @@ export default async function PortfolioItemPage({
           <BackButton lang={lang} path="portfolio" />
         </div>
 
-        <PortfolioItemPageImagesList id={id} />
+        <Suspense
+          fallback={
+            <div className="w-full py-32 flex flex-col items-center justify-center gap-4">
+              <SpinnerMini />
+              <p className="text-espresso-950/60 uppercase tracking-widest text-xs">
+                Завантаження фотографій...
+              </p>
+            </div>
+          }
+        >
+          <PortfolioItemPageImagesList id={id} />
+        </Suspense>
       </div>
     </section>
   );

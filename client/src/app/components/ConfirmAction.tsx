@@ -1,6 +1,7 @@
 import { useTransition } from "react";
 import SpinnerMini from "./SpinnerMini";
 import Modal from "./Modal";
+import Button from "./Button";
 
 interface ConfirmActionProps {
   onConfirm: (formData: FormData) => void | Promise<any>;
@@ -23,11 +24,7 @@ export default function ConfirmAction({
           });
         }}
       >
-        <button
-          disabled={isPending}
-          type="submit"
-          className="bg-red-700 rounded-sm text-white px-6 py-3 hover:bg-red-800 transition-colors uppercase tracking-widest text-xs cursor-pointer"
-        >
+        <Button style="danger" disabled={isPending} type="submit">
           {isPending ? (
             <span className="flex items-center text-xs justify-center gap-2">
               <SpinnerMini w="5" h="5" />
@@ -35,15 +32,12 @@ export default function ConfirmAction({
           ) : (
             confirmText
           )}
-        </button>
+        </Button>
       </form>
       <Modal.Close>
-        <button
-          type="button"
-          className="px-6 py-3 uppercase bg-transparent rounded-sm text-xs text-espresso-950 hover:bg-espresso-950/10 transition-colors cursor-pointer"
-        >
+        <Button type="button" style="cancel">
           {cancelText}
-        </button>
+        </Button>
       </Modal.Close>
     </div>
   );

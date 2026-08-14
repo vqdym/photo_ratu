@@ -31,7 +31,7 @@ export default function Header() {
     <header
       className={`fixed top-0 left-0 w-full z-50 px-4 transition-all duration-500 ease-in-out ${
         shouldBeDark
-          ? "bg-espresso-950/70 backdrop-blur-md shadow-lg py-6"
+          ? "bg-espresso-900 backdrop-blur-md shadow-lg py-6"
           : "bg-transparent py-6"
       }`}
     >

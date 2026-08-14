@@ -1,6 +1,7 @@
 import { getGalleryById } from "@/app/_lib/data-services";
 import InteractiveImageGrid from "./InteractiveImageGrid";
 import { notFound } from "next/navigation";
+import { jwtCookie } from "../_lib/actions/auth";
 
 export default async function PortfolioItemPageImagesList({
   id,
@@ -9,8 +10,15 @@ export default async function PortfolioItemPageImagesList({
 }) {
   const response = await getGalleryById(id);
   const data = response?.data || response;
+  const isAdmin = await jwtCookie();
   if (!data) {
     notFound();
   }
-  return <InteractiveImageGrid images={data.images} />;
+  return (
+    <InteractiveImageGrid
+      images={data.images}
+      isAdmin={isAdmin}
+      galleryId={id}
+    />
+  );
 }
