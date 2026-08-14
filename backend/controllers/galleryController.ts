@@ -32,8 +32,12 @@ const upload = multer({
   fileFilter: multerFilter,
 });
 
-export const uploadGalleryImages = upload.fields([
+export const uploadGallery = upload.fields([
   { name: 'coverImage', maxCount: 1 },
+  { name: 'images', maxCount: 50 },
+]);
+
+export const uploadGalleryImages = upload.fields([
   { name: 'images', maxCount: 50 },
 ]);
 
@@ -90,20 +94,23 @@ export const deleteGalleryPhotosFromCloudinary = catchAsync(
   },
 );
 
-export const cleanupOldGalleryPhotos = catchAsync(
+export const uploadNewImages = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const doc = await Gallery.findById(req.params.id);
     if (!doc) {
       return next(new AppError('Photo collection not found', 404));
-    }
-    if (req.body.coverImage && doc.coverImage) {
-      await deleteFromCloudinary(doc.coverImage);
     }
 
     if (req.body.images) {
       req.body.images = [...doc.images, ...req.body.images];
     }
 
+    next();
+  },
+);
+
+export const editGallery = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
     if (req.body.deletedImages) {
       const imagesToDelete = Array.isArray(req.body.deletedImages)
         ? req.body.deletedImages
@@ -112,14 +119,28 @@ export const cleanupOldGalleryPhotos = catchAsync(
       await Promise.all(
         imagesToDelete.map((url: string) => deleteFromCloudinary(url)),
       );
-
-      const currentImages = req.body.images ? req.body.images : doc.images;
-      req.body.images = currentImages.filter(
-        (url: string) => !imagesToDelete.includes(url),
-      );
     }
 
-    next();
+    if (!req.body.images) {
+      return next(new AppError('No images provided for update', 400));
+    }
+
+    const updatedGallery = await Gallery.findByIdAndUpdate(
+      req.params.id,
+      { images: req.body.images },
+      { new: true, runValidators: true },
+    );
+
+    if (!updatedGallery) {
+      return next(new AppError('Gallery not found', 404));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: updatedGallery,
+      },
+    });
   },
 );
 

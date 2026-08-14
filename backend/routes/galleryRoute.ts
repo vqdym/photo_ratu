@@ -8,7 +8,9 @@ import {
   getPhotoById,
   updatePhoto,
   deleteGalleryPhotosFromCloudinary,
-  cleanupOldGalleryPhotos,
+  uploadNewImages,
+  editGallery,
+  uploadGallery,
 } from '../controllers/galleryController';
 import { protect } from '../controllers/authController';
 
@@ -17,7 +19,7 @@ const router = express.Router();
 router
   .route('/')
   .get(getAllPhotos)
-  .post(protect, uploadGalleryImages, resizeGalleryPhotos, createPhoto);
+  .post(protect, uploadGallery, resizeGalleryPhotos, createPhoto);
 
 router
   .route('/:id')
@@ -27,8 +29,10 @@ router
     protect,
     uploadGalleryImages,
     resizeGalleryPhotos,
-    cleanupOldGalleryPhotos,
+    uploadNewImages,
     updatePhoto,
   );
+
+router.route('/:id/manage-photos').patch(protect, editGallery);
 
 export default router;

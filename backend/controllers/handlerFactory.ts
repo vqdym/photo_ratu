@@ -138,9 +138,8 @@ export const processAndUploadImage = async (
   prefix: string,
 ): Promise<string> => {
   const processedBuffer = await sharp(buffer)
-    .resize(1200, 800)
     .toFormat('jpeg')
-    .jpeg({ quality: 90 })
+    .jpeg({ quality: 100 })
     .toBuffer();
 
   return new Promise((resolve, reject) => {

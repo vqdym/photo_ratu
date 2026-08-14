@@ -43,10 +43,10 @@ function createSendToken(
   });
 }
 
-export const signupAdmin = catchAsync(async (req, res, next) => {
-  const adminUser = await Admin.create(req.body);
-  createSendToken(adminUser, 201, res);
-});
+// export const signupAdmin = catchAsync(async (req, res, next) => {
+//   const adminUser = await Admin.create(req.body);
+//   createSendToken(adminUser, 201, res);
+// });
 
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
@@ -70,6 +70,8 @@ export const protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies && req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
 
   if (!token) {

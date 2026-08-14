@@ -4,6 +4,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import cookieParser from 'cookie-parser';
 
 import AppError from './utils/appError';
 import adminRouter from './routes/adminRoute';
@@ -17,6 +18,7 @@ const app = express();
 app.use(helmet());
 
 app.use(express.json({ limit: '10kb' }));
+app.use(cookieParser());
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -55,8 +57,6 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
-  // ТИМЧАСОВЕ РІШЕННЯ: кастимо до any, щоб TS не сварився.
-  // Пізніше ми створимо нормальний тип для розширеного Request.
   (req as any).requestTime = new Date().toISOString();
   next();
 });
