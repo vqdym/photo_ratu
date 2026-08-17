@@ -86,7 +86,24 @@
   },
 
   "portfolioHeader": {
-    "title": "Portfolio",
+    "title": "/ Portfolio",
+    "subtitle": "Portfolio",
     "description": "Real emotions, genuine laughter, and moments you will want to revisit over and over again."
+  },
+
+  "about": {
+    "title": "/ About me",
+    "subtitle": "About me",
+    "headingPart1": "I am Galia.",
+    "headingPart2": "I capture",
+    "headingHighlight": "real",
+    "headingPart3": "emotions.",
+    "paragraph1": "I have always loved taking photos — initially just for myself and my loved ones, but eventually, this passion turned into a profession. I completed photography training, made it to the TOP-5 best participants of the course, and received a diploma.",
+    "paragraph2": "Today, I create photographs that don't just look beautiful, but preserve your stories, feelings, and moments you want to return to.",
+    "stat1Value": "150+",
+    "stat1Label": "Shoots",
+    "stat2Value": "5",
+    "stat2Label": "Years of experience",
+    "bookButton": "Book a shoot"
   }
 }

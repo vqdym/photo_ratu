@@ -304,7 +304,7 @@ export default function InteractiveImageGrid({
                   {isSubmitting ? <SpinnerMini /> : "Зберегти"}
                 </Button>
                 <Modal.Close>
-                  <Button style="cancel" type="button">
+                  <Button style="cancel" disabled={isSubmitting} type="button">
                     Скасувати
                   </Button>
                 </Modal.Close>

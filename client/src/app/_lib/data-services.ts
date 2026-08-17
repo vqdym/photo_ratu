@@ -31,7 +31,6 @@ export const getGalleryById = cache(async function (id: string) {
 export const createGallery = async function (formData: FormData) {
   try {
     const token = await getJWT();
-    console.log("Мій токен з кукі:", token);
     if (!token) {
       throw new Error("Немає доступу. Ви не адміністратор.");
     }

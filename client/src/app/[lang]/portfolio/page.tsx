@@ -5,9 +5,13 @@ import Spinner from "../../components/Spinner";
 import { getDictionary } from "@/dictionaries";
 import DictProps from "@/types/DictProps";
 
-export const metadata = {
-  title: "/ Портфоліо",
-};
+export async function generateMetadata({ params }: DictProps) {
+  const resolvedParams = await params;
+  const dict = await getDictionary(resolvedParams.lang);
+  return {
+    title: dict.portfolioHeader.title,
+  };
+}
 
 export default async function PortfolioPage({
   searchParams,

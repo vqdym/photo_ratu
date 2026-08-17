@@ -1,5 +1,4 @@
 export default function getNavButtons(lang: string) {
-  console.log(lang);
   const cleanLang = lang?.replace(/\//g, "") || "uk";
   const baseUrl = `/${cleanLang}`;
   const isEn = cleanLang === "en";

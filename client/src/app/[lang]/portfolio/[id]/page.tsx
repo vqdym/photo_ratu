@@ -3,7 +3,17 @@ import BackButton from "@/app/components/BackButton";
 import PortfolioItemPageHeader from "@/app/components/PortfolioItemPageHeader";
 import PortfolioItemPageImagesList from "@/app/components/PortfolioItemPageImagesList";
 import SpinnerMini from "@/app/components/SpinnerMini";
+import { getDictionary } from "@/dictionaries";
+import DictProps from "@/types/DictProps";
 import { Suspense } from "react";
+
+export async function generateMetadata({ params }: DictProps) {
+  const resolvedParams = await params;
+  const dict = await getDictionary(resolvedParams.lang);
+  return {
+    title: dict.portfolioHeader.title,
+  };
+}
 
 export default async function PortfolioItemPage({
   params,

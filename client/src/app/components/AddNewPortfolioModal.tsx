@@ -1,7 +1,7 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { startTransition, useRef, useTransition } from "react";
+import { startTransition, useRef } from "react";
 import { createGallery } from "../_lib/data-services";
 import SpinnerMini from "./SpinnerMini";
 import Button from "./Button";
@@ -16,9 +16,15 @@ interface PortfolioFormValues {
 }
 
 export default function AddNewPortfolioModal() {
-  const [isPending] = useTransition();
-  const { register, handleSubmit, watch, reset, setValue, getValues } =
-    useForm<PortfolioFormValues>();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    getValues,
+    formState: { isSubmitting },
+  } = useForm<PortfolioFormValues>();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   const coverFile = watch("cover");
@@ -45,19 +51,17 @@ export default function AddNewPortfolioModal() {
         formData.append("images", file);
       });
     }
-    startTransition(async () => {
-      try {
-        await createGallery(formData);
+    try {
+      await createGallery(formData);
 
-        closeRef.current?.click();
+      closeRef.current?.click();
 
-        setTimeout(() => {
-          reset();
-        }, 300);
-      } catch (error) {
-        console.error("Помилка збереження:", error);
-      }
-    });
+      setTimeout(() => {
+        reset();
+      }, 300);
+    } catch (error) {
+      console.error("Помилка збереження:", error);
+    }
   };
 
   return (
@@ -248,13 +252,13 @@ export default function AddNewPortfolioModal() {
             <div className="flex gap-4 justify-end pt-4 border-t border-black/5 mt-8">
               <Button
                 style="default"
-                disabled={isPending ? true : false}
+                disabled={isSubmitting ? true : false}
                 type="submit"
               >
-                {isPending ? <SpinnerMini /> : "Зберегти"}
+                {isSubmitting ? <SpinnerMini /> : "Зберегти"}
               </Button>
               <Modal.Close>
-                <Button style="cancel" type="button">
+                <Button style="cancel" disabled={isSubmitting} type="button">
                   Скасувати
                 </Button>
               </Modal.Close>
