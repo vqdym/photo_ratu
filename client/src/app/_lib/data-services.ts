@@ -135,3 +135,81 @@ export const getLastShoots = async function () {
     return { data: [], error: err.message };
   }
 };
+
+export const getService = async function () {
+  try {
+    const response = await axios.get(`${process.env.API_URL}/service?sort`);
+    return response.data.data;
+  } catch (err: any) {
+    console.error("Помилка getService", err.response?.data || err.message);
+    throw err;
+  }
+};
+
+export const createService = async function (formData: FormData) {
+  try {
+    const token = await getJWT();
+    const response = await axios.post(
+      `${process.env.API_URL}/service`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (err: any) {
+    console.error("Помилка createService", err.response?.data || err.message);
+    throw err;
+  } finally {
+    revalidatePath(`/prices`);
+  }
+};
+
+export const updateService = async function (
+  editId: string,
+  formData: FormData,
+) {
+  try {
+    const token = await getJWT();
+    const response = await axios.patch(
+      `${process.env.API_URL}/service/${editId}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+    return response.data.data;
+  } catch (err: any) {
+    console.error("Помилка createService", err.response?.data || err.message);
+    throw err;
+  } finally {
+    revalidatePath(`/prices`);
+  }
+};
+
+export const editPrices = async (services: string[], deletedUrls: string[]) => {
+  try {
+    const token = await getJWT();
+    const res = await axios.patch(
+      `${process.env.API_URL}/service/manage-prices`,
+      {
+        deletedIds: deletedUrls,
+        services: services,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    );
+
+    return res.data;
+  } catch (err: any) {
+    console.error("Помилка editPrices:", err.response?.data || err.message);
+    throw err;
+  }
+};

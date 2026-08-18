@@ -10,6 +10,7 @@ import PhotoCard from "./PhotoCard";
 import Button from "./Button";
 import { useForm } from "react-hook-form";
 import FilePreview from "./FilePreview";
+import handleSort from "@/utils/handleSort";
 
 interface PhotoFormValues {
   gallery: File[];
@@ -56,15 +57,8 @@ export default function InteractiveImageGrid({
       : Array.from(rawGalleryFiles as FileList)
     : [];
 
-  const handleSort = () => {
-    if (dragItem.current !== null && dragOverItem.current !== null) {
-      const _photos = [...photos];
-      const draggedItem = _photos.splice(dragItem.current, 1)[0];
-      _photos.splice(dragOverItem.current, 0, draggedItem);
-      setPhotos(_photos);
-    }
-    dragItem.current = null;
-    dragOverItem.current = null;
+  const onDragEnd = () => {
+    handleSort(dragItem, dragOverItem, photos, setPhotos);
   };
 
   const handleRemove = (urlToRemove: string) => {
@@ -134,7 +128,7 @@ export default function InteractiveImageGrid({
         draggable={isEditing}
         onDragStart={() => (dragItem.current = index)}
         onDragEnter={() => (dragOverItem.current = index)}
-        onDragEnd={handleSort}
+        onDragEnd={onDragEnd}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => !isEditing && setActiveIndex(index)}
       >

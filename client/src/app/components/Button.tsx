@@ -30,6 +30,7 @@ export default function Button({
       onClick={() => {
         if (onClick) onClick();
         if (func) func();
+        return;
       }}
       disabled={disabled}
       type={type}
