@@ -8,6 +8,7 @@ export interface IService extends Document {
   features: string[];
   duration?: string;
   isActive: boolean;
+  index: number;
 }
 
 // 2. Схема Mongoose
@@ -35,14 +36,9 @@ const serviceSchema = new mongoose.Schema<IService>({
     type: [String],
     required: [true, 'Service must have at least one feature'],
   },
-  duration: {
-    type: String,
-    default: '1 година',
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-    select: false,
+  index: {
+    type: Number,
+    default: 0,
   },
 });
 

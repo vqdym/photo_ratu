@@ -42,7 +42,13 @@ export const updateOne = <T>(Model: Model<T>) =>
 
 export const createOne = <T>(Model: Model<T>) =>
   catchAsync(async (req, res, next) => {
-    const doc = await Model.create(req.body);
+    let doc;
+    if (Model.modelName === 'Service') {
+      const count = await Model.countDocuments();
+      doc = await Model.create({ ...req.body, index: count });
+    } else {
+      doc = await Model.create(req.body);
+    }
 
     res.status(201).json({
       status: 'success',

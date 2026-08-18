@@ -23,7 +23,6 @@ class APIFeatures<T> {
     return this;
   }
 
-  // Додай цей метод у клас APIFeatures
   limitFields() {
     const fields = this.getString(this.queryString.fields);
     if (fields) {
@@ -37,11 +36,10 @@ class APIFeatures<T> {
     const sort = this.getString(this.queryString.sort);
 
     if (sort) {
-      this.query = this.query.find({
-        sort: sort.split(',').join(' '),
-      });
+      const sortBy = sort.split(',').join(' ');
+      this.query = this.query.sort(sortBy);
     } else {
-      this.query = this.query.sort('-createdAt');
+      this.query = this.query.sort('index');
     }
 
     return this;

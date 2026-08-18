@@ -14,6 +14,7 @@ import {
   processAndUploadImage,
   updateCloudinaryPhoto,
   checkImageData,
+  deleteFromCloudinary,
 } from './handlerFactory';
 
 const multerStorage = multer.memoryStorage();
@@ -45,6 +46,43 @@ export const resizeServicePhoto = catchAsync(
       'service',
     );
     next();
+  },
+);
+
+export const editService = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.deletedIds && req.body.deletedIds.length > 0) {
+      const servicesToDelete = await Service.find({
+        _id: { $in: req.body.deletedIds },
+      });
+
+      const imagesToDelete = servicesToDelete
+        .map((service) => service.imageUrl)
+        .filter((url) => Boolean(url));
+
+      if (imagesToDelete.length > 0) {
+        await Promise.all(
+          imagesToDelete.map((url: string) => deleteFromCloudinary(url)),
+        );
+      }
+
+      await Service.deleteMany({ _id: { $in: req.body.deletedIds } });
+    }
+
+    if (req.body.services && req.body.services.length > 0) {
+      const updatePromises = req.body.services.map(
+        (service: any, index: number) => {
+          return Service.findByIdAndUpdate(service._id, { index: index });
+        },
+      );
+
+      await Promise.all(updatePromises);
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Prices updated.',
+    });
   },
 );
 

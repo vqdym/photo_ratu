@@ -11,7 +11,9 @@ import {
   deleteServicePhotoFromCloudinary,
   updateServicePhotoOnCloudinary,
   checkServiceData,
+  editService,
 } from '../controllers/serviceController';
+import { editGallery } from '../controllers/galleryController';
 
 const router = express.Router();
 
@@ -25,6 +27,7 @@ router
     resizeServicePhoto,
     createService,
   );
+router.route('/manage-prices').patch(protect, editService);
 router
   .route('/:id')
   .delete(protect, deleteServicePhotoFromCloudinary, deleteService)
