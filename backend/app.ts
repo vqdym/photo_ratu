@@ -29,12 +29,11 @@ const limiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   message: 'Too many requests from this IP, please try again later.',
 });
-app.use('/api', limiter);
+// app.use('/api', limiter);
 
 const mongoMiddleware = mongoSanitize();
 const xssMiddleware = xss();
 
-// Додали типи (req: Request, res: Response, next: NextFunction)
 app.use((req: Request, res: Response, next: NextFunction) => {
   const fakeReq = {
     body: req.body,

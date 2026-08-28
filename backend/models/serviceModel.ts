@@ -2,13 +2,14 @@ import mongoose, { Document } from 'mongoose';
 
 export interface IService extends Document {
   name: string;
+  nameEn: string;
   price: number;
   imageUrl: string;
   description: string;
   features: string[];
   duration?: string;
-  isActive: boolean;
   index: number;
+  isActive?: boolean;
 }
 
 // 2. Схема Mongoose
@@ -18,6 +19,10 @@ const serviceSchema = new mongoose.Schema<IService>({
     required: [true, 'Service must have a name'],
     unique: true,
     trim: true,
+  },
+  nameEn: {
+    type: String,
+    required: [true, 'Англійська назва є обовʼязковою'],
   },
   price: {
     type: Number,
@@ -40,11 +45,15 @@ const serviceSchema = new mongoose.Schema<IService>({
     type: Number,
     default: 0,
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
-serviceSchema.pre(/^find/, function (this: mongoose.Query<any, any>, next) {
-  this.find({ isActive: { $ne: false } });
-});
+// serviceSchema.pre(/^find/, function (this: mongoose.Query<any, any>, next) {
+//   this.find({ isActive: { $ne: false } });
+// });
 
 // 3. Експорт моделі
 const Service = mongoose.model<IService>('Service', serviceSchema);

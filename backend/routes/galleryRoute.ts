@@ -11,6 +11,7 @@ import {
   uploadNewImages,
   editGallery,
   uploadGallery,
+  checkIsCategoryInUse,
 } from '../controllers/galleryController';
 import { protect } from '../controllers/authController';
 
@@ -20,6 +21,8 @@ router
   .route('/')
   .get(getAllPhotos)
   .post(protect, uploadGallery, resizeGalleryPhotos, createPhoto);
+
+router.route('/check-category/:category').get(protect, checkIsCategoryInUse);
 
 router
   .route('/:id')

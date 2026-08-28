@@ -51,6 +51,20 @@ export const resizeServicePhoto = catchAsync(
 
 export const editService = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.archivedIds && req.body.archivedIds.length > 0) {
+      await Service.updateMany(
+        { _id: { $in: req.body.archivedIds } },
+        { isActive: false },
+      );
+    }
+
+    if (req.body.restoredIds && req.body.restoredIds.length > 0) {
+      await Service.updateMany(
+        { _id: { $in: req.body.restoredIds } },
+        { isActive: true },
+      );
+    }
+
     if (req.body.deletedIds && req.body.deletedIds.length > 0) {
       const servicesToDelete = await Service.find({
         _id: { $in: req.body.deletedIds },
@@ -81,12 +95,50 @@ export const editService = catchAsync(
 
     res.status(200).json({
       status: 'success',
-      message: 'Prices updated.',
+      message: 'Prices successfully updated, archived, and deleted.',
     });
   },
 );
 
-export const getAllServices = getAll(Service);
+export const getActiveServices = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const services = await Service.find({ isActive: { $ne: false } }).sort(
+      'index',
+    );
+
+    res.status(200).json({
+      status: 'success',
+      results: services.length,
+      data: { data: services },
+    });
+  },
+);
+
+export const getAllServicesAdmin = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const services = await Service.find({}).sort('index');
+
+    res.status(200).json({
+      status: 'success',
+      results: services.length,
+      data: { data: services },
+    });
+  },
+);
+
+export const getServicesNames = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const services = await Service.find({}).select('name nameEn index');
+
+    res.status(200).json({
+      status: 'success',
+      results: services.length,
+      data: { data: services },
+    });
+  },
+);
+
+// export const getAllServices = getAll(Service);
 export const createService = createOne(Service);
 export const deleteService = deleteOne(Service);
 export const getServiceById = getOne(Service);

@@ -144,6 +144,24 @@ export const editGallery = catchAsync(
   },
 );
 
+export const checkIsCategoryInUse = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const categoryEn = req.params.category;
+
+    const count = await Gallery.countDocuments({
+      category: { $regex: `^${categoryEn}$`, $options: 'i' },
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        isInUse: count > 0,
+        count,
+      },
+    });
+  },
+);
+
 export const getAllPhotos = getAll(Gallery);
 export const createPhoto = createOne(Gallery);
 export const deletePhoto = deleteOne(Gallery);

@@ -2,7 +2,6 @@ import express from 'express';
 import { protect } from '../controllers/authController';
 import {
   createService,
-  getAllServices,
   deleteService,
   getServiceById,
   updateService,
@@ -12,14 +11,15 @@ import {
   updateServicePhotoOnCloudinary,
   checkServiceData,
   editService,
+  getActiveServices,
+  getAllServicesAdmin,
+  getServicesNames,
 } from '../controllers/serviceController';
-import { editGallery } from '../controllers/galleryController';
 
 const router = express.Router();
 
 router
   .route('/')
-  .get(getAllServices)
   .post(
     protect,
     uploadServicePhoto,
@@ -27,6 +27,11 @@ router
     resizeServicePhoto,
     createService,
   );
+
+router.route('/active-services').get(getActiveServices);
+router.route('/services-names').get(getServicesNames);
+router.route('/all-services').get(protect, getAllServicesAdmin);
+
 router.route('/manage-prices').patch(protect, editService);
 router
   .route('/:id')

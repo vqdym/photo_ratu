@@ -21,7 +21,7 @@ const gallerySchema = new mongoose.Schema({
   images: [String],
   category: {
     type: String,
-    enum: ['individual', 'wedding', 'family', 'couple', 'commercial'],
+    required: [true, 'Категорія є обовʼязковою'],
   },
   createdAt: {
     type: Date,
