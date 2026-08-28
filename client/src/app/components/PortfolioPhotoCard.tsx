@@ -4,6 +4,7 @@ import Link from "next/link";
 import { categoryLabels } from "@/utils/categoryLabels";
 import DeleteButton from "./DeleteGallery";
 import { jwtCookie } from "../_lib/actions/auth";
+import { getServicesNames } from "../_lib/data-services";
 
 export default async function PortfolioPhotoCard({
   photosession,
@@ -13,6 +14,13 @@ export default async function PortfolioPhotoCard({
   lang: string;
 }) {
   const isAdmin = await jwtCookie();
+  const servicesNames = await getServicesNames();
+  const currentCategory = servicesNames.find(
+    (s: { name: string; nameEn: string }) =>
+      s.nameEn.toLowerCase() === photosession.category.toLowerCase(),
+  );
+  const categoryText =
+    lang === "uk" ? currentCategory?.name : currentCategory?.nameEn;
   return (
     <div className="relative break-inside-avoid p-6">
       {isAdmin && <DeleteButton id={photosession._id} />}
@@ -34,10 +42,7 @@ export default async function PortfolioPhotoCard({
             {photosession.title}
           </h4>
           <p className="text-[10px] text-espresso-300 tracking-[0.2em] uppercase border border-espresso-950/20 px-3 py-1 rounded-full">
-            {lang === "uk"
-              ? categoryLabels[lang]?.[photosession.category].slice(0, -1) + "а"
-              : categoryLabels[lang]?.[photosession.category] ||
-                photosession.category}
+            {categoryText}
           </p>
         </div>
       </Link>

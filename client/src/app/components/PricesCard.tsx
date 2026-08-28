@@ -9,8 +9,9 @@ export default function PricesCard({
   description,
   features,
   isEditing,
-  onRemove,
-  editComponent,
+  actionMenu,
+  buttonText,
+  isArchived,
 }: {
   index: number;
   imageUrl: string;
@@ -19,8 +20,9 @@ export default function PricesCard({
   price: number;
   features: string[];
   isEditing?: boolean;
-  onRemove?: () => void;
-  editComponent: React.ReactNode;
+  actionMenu?: React.ReactNode;
+  buttonText: string;
+  isArchived: boolean;
 }) {
   return (
     <div
@@ -32,16 +34,13 @@ export default function PricesCard({
           : ""
       }`}
     >
-      {isEditing && (
-        <div className="absolute top-6 right-6 z-30 flex gap-3">
-          {editComponent}
-          <button
-            onClick={onRemove}
-            className="bg-red-600 text-white px-4 py-2 text-xs uppercase tracking-widest hover:bg-red-700 shadow-md transition-colors"
-          >
-            Видалити
-          </button>
+      {isArchived && (
+        <div className="absolute top-3 left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
+          Заархівовано
         </div>
+      )}
+      {isEditing && actionMenu && (
+        <div className="absolute top-6 right-6 z-30">{actionMenu}</div>
       )}
 
       <div className="w-full lg:w-1/2 relative h-[600px] md:h-[650px] overflow-hidden rounded-sm group shadow-md">
@@ -54,7 +53,6 @@ export default function PricesCard({
             !isEditing ? "group-hover:scale-105" : ""
           }`}
         />
-        {/* ПЛАШКА "ПЕРЕТЯГНІТЬ" ПОВЕРХ ФОТО */}
         {isEditing && (
           <div className="absolute inset-0 bg-espresso-950/20 flex items-center justify-center pointer-events-none">
             <span className="bg-white/90 text-espresso-950 px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium shadow-lg">
@@ -90,11 +88,11 @@ export default function PricesCard({
             href={!isEditing ? "https://www.instagram.com/photo_g_ratu_/" : "#"}
             className={`inline-block px-8 py-4 text-xs uppercase tracking-[0.2em] font-medium shadow-sm transition-colors ${
               isEditing
-                ? "bg-gray-300 text-gray-500 pointer-events-none" // Робимо кнопку сірою і неактивною під час редагування
+                ? "bg-gray-300 text-gray-500 pointer-events-none"
                 : "bg-espresso-950 text-beige-50 hover:bg-espresso-800"
             }`}
           >
-            Забронювати
+            {buttonText}
           </Link>
         </div>
       </div>

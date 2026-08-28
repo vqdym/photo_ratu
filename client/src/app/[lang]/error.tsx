@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 
-// Створюємо міні-словник прямо тут, щоб не ускладнювати
 const dictionary = {
   uk: {
     title: "Отакої...",

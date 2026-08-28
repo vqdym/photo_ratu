@@ -104,5 +104,20 @@
     "stat2Value": "5",
     "stat2Label": "Років досвіду",
     "bookButton": "Забронювати зйомку"
+  },
+
+  "prices": {
+    "headTitle": "/ Ціни",
+    "title": "Послуги та",
+    "titlePrice": "ціни",
+    "subtitle": "Інвестиції у спогади",
+    "buttonRes": "забронювати",
+    "conditionsTitle": "Умови зйомки",
+    "conditionsSubtitle": "Деталі співпраці",
+    "footerTitle": "Маєте нестандартну ідею, плануєте вінчання чи масштабний івент?",
+    "footerSubtitle": "Напишіть мені для індивідуального розрахунку"
+  },
+  "presets": {
+    "title": "Незабаром..."
   }
 }

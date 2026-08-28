@@ -105,5 +105,21 @@
     "stat2Value": "5",
     "stat2Label": "Years of experience",
     "bookButton": "Book a shoot"
+  },
+
+  "prices": {
+    "headTitle": "/ Prices",
+    "title": "Services and",
+    "titlePrice": "prices",
+    "subtitle": "Investing in memories",
+    "buttonRes": "reserve",
+    "conditionsTitle": "Shooting conditions",
+    "conditionsSubtitle": "Details of cooperation",
+    "footerTitle": "Do you have an unconventional idea, or are you planning a wedding ceremony or a large-scale event?",
+    "footerSubtitle": "Contact me for a personalized quote"
+  },
+
+  "presets": {
+    "title": "Coming soon..."
   }
 }

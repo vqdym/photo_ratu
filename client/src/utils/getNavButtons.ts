@@ -14,7 +14,7 @@ export default function getNavButtons(lang: string) {
       path: `${baseUrl}/aboutme`,
     },
     { text: isEn ? "Prices" : "Ціни", path: `${baseUrl}/prices` },
-    { text: isEn ? "Presets" : "Пресети", path: `${baseUrl}/presets` },
+    // { text: isEn ? "Presets" : "Пресети", path: `${baseUrl}/presets` },
   ];
 
   return navLinks;

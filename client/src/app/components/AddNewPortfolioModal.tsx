@@ -1,12 +1,13 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { startTransition, useRef } from "react";
-import { createGallery } from "../_lib/data-services";
+import { startTransition, useEffect, useRef, useState } from "react";
+import { createGallery, getServicesNames } from "../_lib/data-services";
 import SpinnerMini from "./SpinnerMini";
 import Button from "./Button";
 import Modal from "./Modal";
 import FilePreview from "./FilePreview";
+import { ServiceProps } from "@/types/Service";
 
 interface PortfolioFormValues {
   title: string;
@@ -16,6 +17,7 @@ interface PortfolioFormValues {
 }
 
 export default function AddNewPortfolioModal() {
+  const [services, setServices] = useState<ServiceProps[]>([]);
   const {
     register,
     handleSubmit,
@@ -26,6 +28,23 @@ export default function AddNewPortfolioModal() {
     formState: { isSubmitting },
   } = useForm<PortfolioFormValues>();
   const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    async function fetchServices() {
+      try {
+        const response = await getServicesNames();
+        const servicesArray = Array.isArray(response)
+          ? response
+          : response?.data?.data || response?.data || [];
+
+        setServices(servicesArray);
+      } catch (error) {
+        console.error("Помилка завантаження сервісів:", error);
+        setServices([]);
+      }
+    }
+    fetchServices();
+  }, []);
 
   const coverFile = watch("cover");
   const rawGalleryFiles = watch("gallery");
@@ -108,11 +127,13 @@ export default function AddNewPortfolioModal() {
                 className="w-full px-4 py-3 border border-black/10 rounded-sm focus:outline-none focus:border-espresso-950 text-espresso-950 transition-colors bg-beige-50/30 cursor-pointer"
                 {...register("category", { required: true })}
               >
-                <option value="individual">Індивідуальна</option>
-                <option value="couple">Парна</option>
-                <option value="family">Сімейна</option>
-                <option value="wedding">Весільна</option>
-                <option value="commercial">Комерційна</option>
+                <option value="">-- Оберіть категорію --</option>
+                {Array.isArray(services) &&
+                  services.map((service) => (
+                    <option key={service._id} value={service.nameEn}>
+                      {service.name}
+                    </option>
+                  ))}
               </select>
             </div>
 

@@ -12,7 +12,7 @@ export default function CategoryButton({
   activeCategory,
 }: CategoryButtonProps) {
   const href =
-    categoryVal === "All" ? "/portfolio" : `/portfolio?category=${categoryVal}`;
+    categoryVal === "all" ? "/portfolio" : `/portfolio?category=${categoryVal}`;
   return (
     <Link
       href={href}

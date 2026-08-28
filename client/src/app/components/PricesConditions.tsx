@@ -1,11 +1,17 @@
-export default function PricesConditions() {
+export default function PricesConditions({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
   return (
     <div className="mt-28 pt-20 border-t border-espresso-950/10">
       <div className="text-center max-w-xl mx-auto mb-16">
         <span className="text-xs uppercase tracking-[0.3em] text-espresso-950/40 mb-3 block">
-          Деталі співпраці
+          {subtitle}
         </span>
-        <h2 className="text-3xl md:text-4xl font-light">Умови зйомки</h2>
+        <h2 className="text-3xl md:text-4xl font-light">{title}</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

@@ -3,15 +3,25 @@ import axios from "axios";
 import { revalidatePath } from "next/cache";
 import { cache } from "react";
 import { getJWT } from "./actions/auth";
+import { ServiceProps } from "@/types/Service";
+// import Error from "next/error";
 
 export const getGallery = async function (category?: string) {
   try {
-    const query = category && category !== "all" ? `?category=${category}` : "";
+    const params = new URLSearchParams();
 
-    const response = await axios.get(`${process.env.API_URL}/gallery${query}`);
+    params.append("sort", "-createdAt");
+
+    if (category && category !== "all") {
+      params.append("category", category);
+    }
+
+    const response = await axios.get(
+      `${process.env.API_URL}/gallery?${params.toString()}`,
+    );
 
     return response.data.data;
-  } catch (err) {
+  } catch (err: any) {
     console.error("Помилка getGallery:", err.response?.data || err.message);
     return { data: null, error: err.message };
   }
@@ -22,7 +32,7 @@ export const getGalleryById = cache(async function (id: string) {
     const response = await axios(`${process.env.API_URL}/gallery/${id}`);
 
     return response.data.data;
-  } catch (err) {
+  } catch (err: any) {
     console.error("Помилка getGalleryById:", err.response?.data || err.message);
     return null;
   }
@@ -136,15 +146,58 @@ export const getLastShoots = async function () {
   }
 };
 
-export const getService = async function () {
+export const getActiveServices = async function () {
   try {
-    const response = await axios.get(`${process.env.API_URL}/service?sort`);
-    return response.data.data;
+    const res = await axios.get(
+      `${process.env.API_URL}/service/active-services`,
+    );
+    return res.data.data.data;
   } catch (err: any) {
-    console.error("Помилка getService", err.response?.data || err.message);
-    throw err;
+    const errorMessage = err.response?.data?.message || err.message;
+    console.error("Помилка getActiveServices:", errorMessage);
+    throw new Error(errorMessage);
   }
 };
+
+export const getServicesNames = async function () {
+  try {
+    const res = await axios.get(
+      `${process.env.API_URL}/service/services-names`,
+    );
+    return res.data.data.data;
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.message || err.message;
+    console.error("Помилка getServicesNames:", errorMessage);
+    throw new Error(errorMessage);
+  }
+};
+
+export const getAllServices = async function () {
+  try {
+    const token = await getJWT();
+    const res = await axios.get(`${process.env.API_URL}/service/all-services`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data.data.data;
+  } catch (err: any) {
+    const errorMessage = err.response?.data?.message || err.message;
+    console.error("Помилка getAllServices:", errorMessage);
+    throw new Error(errorMessage);
+  }
+};
+
+// export const getService = async function () {
+//   try {
+//     const response = await axios.get(`${process.env.API_URL}/service?sort`);
+//     console.log("FROM DATASERVISE-----------------", response.data.data.data);
+//     return response.data.data.data;
+//   } catch (err: any) {
+//     console.error("Помилка getService", err.response?.data || err.message);
+//     throw err;
+//   }
+// };
 
 export const createService = async function (formData: FormData) {
   try {
@@ -191,15 +244,36 @@ export const updateService = async function (
   }
 };
 
-export const editPrices = async (services: string[], deletedUrls: string[]) => {
+export const editPrices = async (
+  services: ServiceProps[],
+  archivedIds: string[],
+  deletedIds: string[],
+  restoredIds: string[],
+) => {
   try {
     const token = await getJWT();
     const res = await axios.patch(
       `${process.env.API_URL}/service/manage-prices`,
+      { services, archivedIds, deletedIds, restoredIds },
       {
-        deletedIds: deletedUrls,
-        services: services,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       },
+    );
+    return res.data;
+  } catch (err: any) {
+    console.error(err);
+    throw err;
+  }
+};
+
+export const isCategoryInUse = async (category: string) => {
+  try {
+    const token = await getJWT();
+
+    const res = await axios.get(
+      `${process.env.API_URL}/gallery/check-category/${category}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -207,9 +281,10 @@ export const editPrices = async (services: string[], deletedUrls: string[]) => {
       },
     );
 
-    return res.data;
-  } catch (err: any) {
-    console.error("Помилка editPrices:", err.response?.data || err.message);
-    throw err;
+    return res.data.data.isInUse;
+  } catch (error) {
+    console.error("Помилка при перевірці категорії:", error);
+
+    return false;
   }
 };

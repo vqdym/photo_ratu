@@ -1,24 +1,22 @@
 import { jwtCookie } from "../_lib/actions/auth";
-import { getService } from "../_lib/data-services";
+import { getActiveServices, getAllServices } from "../_lib/data-services";
 import InteractivePricesGrid from "./InteractivePricesGrid";
-import PricesCard from "./PricesCard";
 
-interface ServiceProps {
-  _id: string;
-  name: string;
-  price: number;
-  imageUrl: string;
-  description: string;
-  features: string[];
-  __v: number;
-}
-
-export default async function PricesList() {
-  const { data } = await getService();
+export default async function PricesList({
+  buttonText,
+}: {
+  buttonText: string;
+}) {
   const isAdmin = await jwtCookie();
+  const services = isAdmin ? await getAllServices() : await getActiveServices();
+  console.log("SERVICES -----------", services);
   return (
     <div className="space-y-24">
-      <InteractivePricesGrid services={data} isAdmin={isAdmin} />
+      <InteractivePricesGrid
+        buttonText={buttonText}
+        services={services}
+        isAdmin={isAdmin}
+      />
     </div>
   );
 }
