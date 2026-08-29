@@ -13,8 +13,8 @@ interface FooterNavProps {
 
 export default function FooterNav({ links, navTitle }: FooterNavProps) {
   return (
-    <div className="flex flex-col gap-6">
-      <h4 className="text-[12px] tracking-[0.4em] uppercase text-beige-100/40 mb-2">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <h4 className="text-[12px] tracking-[0.4em] uppercase text-beige-100/40 md:mb-2">
         {navTitle}
       </h4>
       <nav className="flex flex-col gap-4">

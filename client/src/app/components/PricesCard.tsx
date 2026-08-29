@@ -26,7 +26,7 @@ export default function PricesCard({
 }) {
   return (
     <div
-      className={`relative flex flex-col lg:flex-row items-center gap-12 lg:gap-20 transition-all duration-300 ${
+      className={`relative flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-20 transition-all duration-300 ${
         index % 2 === 1 ? "lg:flex-row-reverse" : ""
       } ${
         isEditing
@@ -35,7 +35,7 @@ export default function PricesCard({
       }`}
     >
       {isArchived && (
-        <div className="absolute top-3 left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
+        <div className="absolute top-14 left-4 md:top-3 md:left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
           Заархівовано
         </div>
       )}
@@ -43,7 +43,7 @@ export default function PricesCard({
         <div className="absolute top-6 right-6 z-30">{actionMenu}</div>
       )}
 
-      <div className="w-full lg:w-1/2 relative h-[600px] md:h-[650px] overflow-hidden rounded-sm group shadow-md">
+      <div className="w-full lg:w-1/2 relative h-[500px] md:h-[650px] overflow-hidden rounded-sm group shadow-md">
         <Image
           src={imageUrl}
           alt="Фото з фотосесії"
@@ -54,7 +54,7 @@ export default function PricesCard({
           }`}
         />
         {isEditing && (
-          <div className="absolute inset-0 bg-espresso-950/20 flex items-center justify-center pointer-events-none">
+          <div className="absolute inset-0 bg-espresso-950/20 hidden md:flex items-center justify-center pointer-events-none">
             <span className="bg-white/90 text-espresso-950 px-6 py-3 text-xs uppercase tracking-[0.2em] font-medium shadow-lg">
               Перетягніть для сортування
             </span>
@@ -69,11 +69,11 @@ export default function PricesCard({
 
         <h3 className="text-3xl md:text-4xl font-light mb-6">{title}</h3>
 
-        <div className="text-3xl font-medium mb-8 text-espresso-950">
+        <div className="text-3xl font-medium mb-6 md:mb-8 text-espresso-950">
           {price} ₴
         </div>
 
-        <ul className="space-y-3 font-light text-espresso-950/80 mb-10 border-t border-b border-espresso-950/10 py-6">
+        <ul className="space-y-3 font-light text-espresso-950/80 mb-6 md:mb-10 border-t border-b border-espresso-950/10 py-6">
           {features.map((item: string, i: number) => (
             <li key={i} className="flex items-center gap-3">
               <span className="text-espresso-950/40">✦</span>

@@ -3,14 +3,17 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-export default function LangSwitcher() {
+export default function LangSwitcher({
+  isMobile = false,
+}: {
+  isMobile?: boolean;
+}) {
   const pathname = usePathname();
 
   const redirectedPathname = (locale: string) => {
     if (!pathname) return "/";
 
     const segments = pathname.split("/");
-
     segments[1] = locale;
 
     return segments.join("/");
@@ -20,7 +23,11 @@ export default function LangSwitcher() {
   const isEn = pathname?.startsWith("/en");
 
   return (
-    <div className="absolute top-0 right-0 translate-x-10 -translate-y-5 flex flex-col items-center text-sm font-light uppercase tracking-widest z-50">
+    <div
+      className={`flex items-center text-sm font-light uppercase tracking-widest z-50 ${
+        isMobile ? "flex-row gap-4" : "flex-col"
+      }`}
+    >
       <Link
         href={redirectedPathname("uk")}
         className={`transition-opacity duration-300 ${
@@ -30,7 +37,10 @@ export default function LangSwitcher() {
         Укр
       </Link>
 
-      <span className="text-white/20">—</span>
+      <span className={`text-white/20 ${isMobile ? "hidden" : "block"}`}>
+        —
+      </span>
+      {isMobile && <span className="text-white/20">|</span>}
 
       <Link
         href={redirectedPathname("en")}

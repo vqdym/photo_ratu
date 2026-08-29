@@ -46,6 +46,17 @@ export default function InteractivePricesGrid({
     handleSort(dragItem, dragOverItem, services, setServices);
   };
 
+  // Функція для переміщення карток цін кнопками на мобільних
+  const moveService = (index: number, direction: "up" | "down") => {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= services.length) return;
+
+    const updatedServices = [...services];
+    const [movedItem] = updatedServices.splice(index, 1);
+    updatedServices.splice(newIndex, 0, movedItem);
+    setServices(updatedServices);
+  };
+
   const handleArchive = (id: string) => {
     setServices((prev) =>
       prev.map((s) => (s._id === id ? { ...s, isActive: false } : s)),
@@ -122,7 +133,7 @@ export default function InteractivePricesGrid({
           onDragEnter={() => (dragOverItem.current = index)}
           onDragEnd={onDragEnd}
           onDragOver={(e) => e.preventDefault()}
-          className={`relative ${isEditing ? "cursor-move" : ""} ${
+          className={`relative mb-12 md:mb-6 ${isEditing ? "cursor-move" : ""} ${
             isArchived ? "opacity-60 transition-opacity" : ""
           }`}
         >
@@ -170,6 +181,27 @@ export default function InteractivePricesGrid({
               </Menu>
             }
           />
+
+          {isEditing && (
+            <div className="absolute top-4 left-4 flex gap-1 z-20 md:hidden bg-black/70 p-1.5 rounded-sm backdrop-blur-sm shadow-md">
+              <button
+                type="button"
+                onClick={() => moveService(index, "up")}
+                disabled={index === 0}
+                className="px-3 py-1 text-white text-xs bg-white/20 rounded disabled:opacity-30"
+              >
+                ↑ Вгору
+              </button>
+              <button
+                type="button"
+                onClick={() => moveService(index, "down")}
+                disabled={index === services.length - 1}
+                className="px-3 py-1 text-white text-xs bg-white/20 rounded disabled:opacity-30"
+              >
+                ↓ Вниз
+              </button>
+            </div>
+          )}
         </div>
       );
     },

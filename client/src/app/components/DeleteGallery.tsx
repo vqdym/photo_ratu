@@ -20,7 +20,7 @@ export default function DeleteGallery({
         <Modal.Open opens={`delete-modal-${id}`}>
           <ButtonDeleteMini
             styles="absolute top-4 right-4 z-20 cursor-pointer
-          flex items-center justify-center p-2 rounded-full bg-beige-300
+          flex items-center justify-center p-1 md:p-2 rounded-full bg-beige-300
           backdrop-blur-sm text-espresso-950 shadow-sm hover:bg-red-700
           hover:text-white transition-all duration-300 group"
           />

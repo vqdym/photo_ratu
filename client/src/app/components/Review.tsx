@@ -12,7 +12,7 @@ export default function Review({
       <span className="absolute top-4 left-6 text-8xl font-serif text-white/5 select-none transition-transform duration-700 group-hover:-translate-y-2">
         “
       </span>
-      <p className="relative z-10 text-sm md:text-base font-light leading-relaxed text-white/80 mb-12 mt-4">
+      <p className="relative z-10 text-sm md:text-base font-light leading-relaxed text-white/80 mb-6 md:mb-12 mt-4">
         {text}
       </p>
       <div className="relative z-10 border-t border-white/10 pt-6">

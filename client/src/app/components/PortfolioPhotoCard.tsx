@@ -27,9 +27,9 @@ export default async function PortfolioPhotoCard({
       <Link
         href={`/${lang}
 /portfolio/${photosession._id}`}
-        className="relative flex flex-col bg-white w-full p-6 md:p-8 py-12 overflow-hidden group shadow-xl hover:shadow-2xl transition-shadow duration-500 rounded-sm cursor-pointer"
+        className="relative flex flex-col bg-white w-full p-4 md:p-6 md:p-8 py-6 md:py-12 overflow-hidden group shadow-xl hover:shadow-2xl transition-shadow duration-500 rounded-sm cursor-pointer"
       >
-        <div className="relative w-full h-150 mx-auto overflow-hidden mb-6">
+        <div className="relative w-full h-90 md:h-150 mx-auto overflow-hidden mb-6">
           <Image
             src={photosession.coverImage}
             alt={photosession.category}

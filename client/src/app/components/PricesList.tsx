@@ -9,7 +9,6 @@ export default async function PricesList({
 }) {
   const isAdmin = await jwtCookie();
   const services = isAdmin ? await getAllServices() : await getActiveServices();
-  console.log("SERVICES -----------", services);
   return (
     <div className="space-y-24">
       <InteractivePricesGrid

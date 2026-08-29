@@ -17,7 +17,7 @@ export default function CategoryButton({
     <Link
       href={href}
       scroll={false}
-      className={`text-sm tracking-[0.2em] uppercase transition-colors duration-300 pb-1 border-b ${
+      className={`text-[14px] md:text-sm tracking-[0.2em] uppercase transition-colors duration-300 pb-1 border-b ${
         activeCategory === categoryVal
           ? "border-espresso-950 text-espresso-950"
           : "border-transparent text-espresso-950/40 hover:text-espresso-950"

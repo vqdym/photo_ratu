@@ -60,11 +60,11 @@ export default function LightboxSlider({
   if (images.length < 1) return null;
 
   return (
-    <div className="relative w-full h-[95vh] flex flex-col items-center justify-between py-4">
-      <div className="relative w-full flex-1 flex items-center justify-center min-h-0 mb-4 group">
+    <div className="relative w-full h-[85vh] md:h-[95vh] flex flex-col items-center justify-between py-4">
+      <div className="relative w-full flex-1 flex items-center justify-center min-h-0 md:mb-4 group">
         <button
           onClick={handlePrev}
-          className="cursor-pointer absolute left-4 md:left-10 z-50 p-3 bg-espresso-950/50 text-white rounded-full hover:bg-espresso-950 transition-colors"
+          className="cursor-pointer absolute left-0 md:left-10 z-50 p-3 bg-espresso-950/30 md:bg-espresso-950/50 text-white rounded-full hover:bg-espresso-950 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -95,7 +95,7 @@ export default function LightboxSlider({
 
         <button
           onClick={handleNext}
-          className="cursor-pointer absolute right-4 md:right-10 z-50 p-3 bg-espresso-950/50 text-white rounded-full hover:bg-espresso-950 transition-colors"
+          className="cursor-pointer absolute right-0 md:right-10 z-50 p-3 bg-espresso-950/30 md:bg-espresso-950/50 text-white rounded-full hover:bg-espresso-950 transition-colors"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"

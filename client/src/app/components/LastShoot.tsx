@@ -22,7 +22,7 @@ export default function LastShoot({
         isLower ? "md:mt-32" : ""
       }`}
     >
-      <div className="relative w-full aspect-[4/5] mb-6 h-[40vh] md:h-[50vh] overflow-hidden">
+      <div className="relative w-full aspect-[4/5] mb-6 h-[60vh] md:h-[50vh] overflow-hidden">
         <Image
           src={imgUrl}
           alt={altText}

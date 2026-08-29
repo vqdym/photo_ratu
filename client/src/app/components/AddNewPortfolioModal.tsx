@@ -91,18 +91,21 @@ export default function AddNewPortfolioModal() {
         </Modal.Open>
       </div>
       <Modal.Window name={`add-new-portfolio`}>
-        <div className="p-4 md:p-6 md:px-10 rounded-sm max-w-2xl w-[90vw] mx-auto bg-white shadow-2xl text-left">
-          <div className="mb-8 border-b border-black/5 pb-4">
+        <div className="p-4 md:p-6 md:px-10 rounded-sm max-w-2xl w-[95vw] md:w-[90vw] max-h-[90vh] overflow-y-auto mx-auto bg-white shadow-2xl text-left relative">
+          <div className="mb-6 md:mb-8 border-b border-black/5 pb-4">
             <h2 className="text-2xl italic text-espresso-950">
               Нова фотосесія
             </h2>
-            <p className="text-sm text-espresso-950/60">
+            <p className="text-sm text-espresso-950/60 mt-1">
               Заповніть форму нижче, щоб додати нову галерею до вашого
               портфоліо.
             </p>
           </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+          <form
+            className="space-y-5 md:space-y-6"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <div>
               <label
                 htmlFor="title"
@@ -141,7 +144,6 @@ export default function AddNewPortfolioModal() {
               <label className="block text-sm text-espresso-950 mb-2">
                 Обкладинка фотосесії
               </label>
-
               <label className="relative w-full border-2 border-dashed border-black/15 rounded-sm p-4 flex flex-col items-center justify-center text-center hover:bg-beige-50/50 hover:border-espresso-950/30 transition-colors cursor-pointer group">
                 <input
                   type="file"
@@ -151,14 +153,12 @@ export default function AddNewPortfolioModal() {
                 />
 
                 {coverFile && coverFile.length > 0 ? (
-                  <div className="text-espresso-950 font-medium">
-                    <p>Вибрано:</p>
-                    <div className="mt-2">
-                      <FilePreview
-                        file={coverFile[0]}
-                        onRemove={() => setValue("cover", null)}
-                      />
-                    </div>
+                  <div className="text-espresso-950 font-medium w-full">
+                    <p className="mb-2">Вибрано:</p>
+                    <FilePreview
+                      file={coverFile[0]}
+                      onRemove={() => setValue("cover", null)}
+                    />
                   </div>
                 ) : (
                   <>
@@ -168,7 +168,7 @@ export default function AddNewPortfolioModal() {
                       viewBox="0 0 24 24"
                       strokeWidth={1.5}
                       stroke="currentColor"
-                      className="w-8 h-8 text-espresso-300 mb-3 group-hover:text-espresso-950 transition-colors"
+                      className="w-7 h-7 md:w-8 md:h-8 text-espresso-300 mb-2 group-hover:text-espresso-950 transition-colors"
                     >
                       <path
                         strokeLinecap="round"
@@ -188,10 +188,9 @@ export default function AddNewPortfolioModal() {
             </div>
 
             <div>
-              <label className="block text-sm text-espresso-950 mb-2 mt-6">
+              <label className="block text-sm text-espresso-950 mb-2 mt-2 md:mt-4">
                 Фотографії для галереї
               </label>
-
               <label className="relative w-full border-2 border-dashed border-black/15 rounded-sm p-4 flex flex-col items-center justify-center text-center hover:bg-beige-50/50 hover:border-espresso-950/30 transition-colors cursor-pointer group mb-4">
                 <input
                   type="file"
@@ -209,7 +208,6 @@ export default function AddNewPortfolioModal() {
                     setValue("gallery", [...currentArray, ...newFiles], {
                       shouldValidate: true,
                     });
-
                     e.target.value = "";
                   }}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
@@ -221,7 +219,7 @@ export default function AddNewPortfolioModal() {
                   viewBox="0 0 24 24"
                   strokeWidth={1.5}
                   stroke="currentColor"
-                  className="w-8 h-8 text-espresso-300 mb-3 group-hover:text-espresso-950 transition-colors"
+                  className="w-7 h-7 md:w-8 md:h-8 text-espresso-300 mb-2 group-hover:text-espresso-950 transition-colors"
                 >
                   <path
                     strokeLinecap="round"
@@ -239,20 +237,19 @@ export default function AddNewPortfolioModal() {
 
               {galleryArray.length > 0 && (
                 <div className="w-full">
-                  <div className="flex justify-between items-center mb-3">
+                  <div className="flex justify-between items-center mb-2 md:mb-3">
                     <p className="text-sm font-medium text-espresso-950">
                       Завантажено файлів: {galleryArray.length}
                     </p>
                     <button
                       type="button"
                       onClick={() => setValue("gallery", [])}
-                      className="text-xs text-red-500 hover:underline"
+                      className="text-xs text-red-500 hover:underline px-2 py-1"
                     >
                       Очистити всі
                     </button>
                   </div>
-
-                  <div className="max-h-20 overflow-y-auto flex flex-col">
+                  <div className="max-h-32 md:max-h-48 overflow-y-auto flex flex-col pr-1">
                     {galleryArray.map((file, index) => (
                       <FilePreview
                         key={index}
@@ -270,7 +267,12 @@ export default function AddNewPortfolioModal() {
               )}
             </div>
 
-            <div className="flex gap-4 justify-end pt-4 border-t border-black/5 mt-8">
+            <div className="sticky bottom-[-16px] md:bottom-[-24px] bg-white pt-4 pb-4 md:pb-6 border-t border-black/5 mt-4 md:mt-8 flex gap-3 md:gap-4 justify-end z-10">
+              <Modal.Close>
+                <Button style="cancel" disabled={isSubmitting} type="button">
+                  Скасувати
+                </Button>
+              </Modal.Close>
               <Button
                 style="default"
                 disabled={isSubmitting ? true : false}
@@ -278,11 +280,6 @@ export default function AddNewPortfolioModal() {
               >
                 {isSubmitting ? <SpinnerMini /> : "Зберегти"}
               </Button>
-              <Modal.Close>
-                <Button style="cancel" disabled={isSubmitting} type="button">
-                  Скасувати
-                </Button>
-              </Modal.Close>
               <Modal.Close>
                 <button ref={closeRef} type="button" className="hidden" />
               </Modal.Close>

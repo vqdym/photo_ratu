@@ -7,13 +7,13 @@ export default function FooterContact({
   contactTitle: string;
 }) {
   return (
-    <div className="flex flex-col gap-6">
-      <h4 className="text-[12px] tracking-[0.4em] uppercase text-beige-100/40 mb-2">
+    <div className="flex flex-col gap-4 md:gap-6">
+      <h4 className="text-[12px] tracking-[0.4em] uppercase text-beige-100/40 md:mb-2">
         {contactTitle}
       </h4>
       <Link
         href="mailto:hello@yourname.com"
-        className="text-xl font-serif italic text-beige-100 hover:text-white transition-colors mb-4"
+        className="text-xl font-serif italic text-beige-100 hover:text-white transition-colors md:mb-4"
       >
         galiaratush@gmail.com
       </Link>

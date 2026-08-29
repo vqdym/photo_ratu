@@ -21,7 +21,7 @@ export default function PortfolioFilter({
 
   const allLabel = lang === "en" ? "All" : "Усі";
   return (
-    <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-16">
+    <div className="flex flex-wrap justify-center gap-4 md:gap-8 mb-12 md:mb-16">
       <CategoryButton
         categoryVal="all"
         categoryLab={allLabel}

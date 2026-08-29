@@ -22,7 +22,6 @@ export default function Reviews({ review }: ReviewsProps) {
       <section className="w-full bg-espresso-700 text-beige-100 pt-[calc(6vw+4rem)] pb-24 md:pb-32 -mt-[7vw] relative z-20 [clip-path:polygon(0_6vw,100%_0,100%_100%,0_100%)]">
         <div className="mx-auto max-w-[1440px] px-6 md:px-16 relative z-20">
           <div className="flex flex-col items-center mb-16 md:mb-20 animate-fade-up">
-            {/* 3. Підставляємо динамічний текст із dict */}
             <p className="text-[12px] tracking-[0.4em] uppercase text-beige-100/50 mb-6">
               {review.subtitle}
             </p>

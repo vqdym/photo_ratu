@@ -33,7 +33,7 @@ export default function AboutMe({ about }: AboutMeProps) {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="w-full lg:w-1/2 relative h-137.5 md:h-162.5"
         >
-          <div className="absolute top-0 left-0 w-3/4 h-112.5 md:h-137.5 z-10 overflow-hidden shadow-sm">
+          <div className="absolute top-0 left-0 w-7/8 md:w-3/4 h-100 md:h-137.5 z-10 overflow-hidden shadow-sm">
             <Image
               src="/images/aboutme/IMG_ABOUT1.PNG"
               alt="Main portrait"
@@ -44,7 +44,7 @@ export default function AboutMe({ about }: AboutMeProps) {
             />
           </div>
 
-          <div className="absolute bottom-0 right-0 w-[60%] h-75 md:h-87.5 z-20 border-10 border-beige-50 overflow-hidden shadow-xl bg-espresso-200">
+          <div className="absolute bottom-0 right-0 w-[60%] h-65 md:h-87.5 z-20 border-10 border-beige-50 overflow-hidden shadow-xl bg-espresso-200">
             <Image
               src="https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000&auto=format&fit=crop"
               alt="Detail"

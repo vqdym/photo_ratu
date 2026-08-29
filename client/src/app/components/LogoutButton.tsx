@@ -11,7 +11,7 @@ export default function LogoutButton() {
 
       <button
         type="submit"
-        className="cursor-pointer border border-beige-100 p-4 transition-all text-beige-100 duration-500 hover:bg-espresso-950/50"
+        className="cursor-pointer border text-sm md:text-base border-beige-100 p-4 transition-all text-beige-100 duration-500 hover:bg-espresso-950/50"
       >
         Вийти з режиму адміністратора
       </button>

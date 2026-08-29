@@ -61,6 +61,17 @@ export default function InteractiveImageGrid({
     handleSort(dragItem, dragOverItem, photos, setPhotos);
   };
 
+  // Функція для переміщення фоток кнопками (ідеально для мобільних)
+  const movePhoto = (index: number, direction: "up" | "down") => {
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex < 0 || newIndex >= photos.length) return;
+
+    const updatedPhotos = [...photos];
+    const [movedItem] = updatedPhotos.splice(index, 1);
+    updatedPhotos.splice(newIndex, 0, movedItem);
+    setPhotos(updatedPhotos);
+  };
+
   const handleRemove = (urlToRemove: string) => {
     setPhotos(photos.filter((url) => url !== urlToRemove));
     setDeletedUrls((prev) => [...prev, urlToRemove]);
@@ -131,6 +142,7 @@ export default function InteractiveImageGrid({
         onDragEnd={onDragEnd}
         onDragOver={(e) => e.preventDefault()}
         onClick={() => !isEditing && setActiveIndex(index)}
+        className="relative group"
       >
         {!isEditing ? (
           <Modal.Open opens="item-lightbox">
@@ -142,12 +154,39 @@ export default function InteractiveImageGrid({
             />
           </Modal.Open>
         ) : (
-          <PhotoCard
-            imgUrl={imgUrl}
-            index={index}
-            isEditing={isEditing}
-            handleRemove={handleRemove}
-          />
+          <>
+            <PhotoCard
+              imgUrl={imgUrl}
+              index={index}
+              isEditing={isEditing}
+              handleRemove={handleRemove}
+            />
+            {/* Кнопки переміщення для мобільних пристроїв, де не працює drag-and-drop */}
+            <div className="absolute top-2 left-2 flex gap-1 z-20 md:hidden bg-black/60 p-1 rounded-sm backdrop-blur-sm">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  movePhoto(index, "up");
+                }}
+                disabled={index === 0}
+                className="px-2 py-1 text-white text-xs bg-white/20 rounded disabled:opacity-30"
+              >
+                ←
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  movePhoto(index, "down");
+                }}
+                disabled={index === photos.length - 1}
+                className="px-2 py-1 text-white text-xs bg-white/20 rounded disabled:opacity-30"
+              >
+                →
+              </button>
+            </div>
+          </>
         )}
       </div>
     );
@@ -195,15 +234,16 @@ export default function InteractiveImageGrid({
             )}
           </div>
         )}
+
         <Modal.Window name="add-new-photo">
-          <div className="p-4 md:p-6 md:px-10 rounded-sm max-w-2xl w-[90vw] mx-auto bg-white shadow-2xl text-left">
-            <div className="mb-8 border-b border-black/5 pb-4">
+          <div className="p-4 md:p-6 md:px-10 rounded-sm max-w-2xl w-[95vw] md:w-[90vw] max-h-[90vh] overflow-y-auto mx-auto bg-white shadow-2xl text-left relative">
+            <div className="mb-6 md:mb-8 border-b border-black/5 pb-4">
               <h2 className="text-2xl italic text-espresso-950">
                 Додати нові фотографії
               </h2>
               {errorMsg && (
                 <div className="bg-red-300/70 border p-4 text-white mt-4 rounded-sm">
-                  <h2 className="">{errorMsg}</h2>
+                  <h2>{errorMsg}</h2>
                 </div>
               )}
             </div>
@@ -267,13 +307,13 @@ export default function InteractiveImageGrid({
                     <button
                       type="button"
                       onClick={() => setValue("gallery", [])}
-                      className="text-xs text-red-500 hover:underline"
+                      className="text-xs text-red-500 hover:underline px-2 py-1"
                     >
                       Очистити всі
                     </button>
                   </div>
 
-                  <div className="max-h-20 overflow-y-auto flex flex-col">
+                  <div className="max-h-32 md:max-h-48 overflow-y-auto flex flex-col pr-1">
                     {galleryArray.map((file, index) => (
                       <FilePreview
                         key={index}
@@ -289,7 +329,13 @@ export default function InteractiveImageGrid({
                   </div>
                 </div>
               )}
-              <div className="flex gap-4 justify-end pt-4 border-t border-black/5 mt-8">
+
+              <div className="sticky bottom-0 bg-white pt-4 pb-4 border-t border-black/5 mt-8 flex gap-4 justify-end z-10">
+                <Modal.Close>
+                  <Button style="cancel" disabled={isSubmitting} type="button">
+                    Скасувати
+                  </Button>
+                </Modal.Close>
                 <Button
                   style="default"
                   disabled={isSubmitting ? true : false}
@@ -297,11 +343,6 @@ export default function InteractiveImageGrid({
                 >
                   {isSubmitting ? <SpinnerMini /> : "Зберегти"}
                 </Button>
-                <Modal.Close>
-                  <Button style="cancel" disabled={isSubmitting} type="button">
-                    Скасувати
-                  </Button>
-                </Modal.Close>
                 <Modal.Close>
                   <button ref={closeRef} type="button" className="hidden" />
                 </Modal.Close>
