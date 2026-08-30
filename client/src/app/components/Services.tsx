@@ -20,7 +20,7 @@ interface ServicesProps {
 export default function Services({ dict }: ServicesProps) {
   const servicePhotos = [
     "/images/service/IMG_individual_service.JPG",
-    "/images/service/IMG_couple_service2.jpg",
+    "/images/service/IMG_couple_service2.JPG",
     "/images/service/IMG_family_service.jpg",
   ];
   return (

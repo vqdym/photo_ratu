@@ -6,7 +6,7 @@ export default function PricesConditions({
   subtitle: string;
 }) {
   return (
-    <div className="mt-28 pt-20 border-t border-espresso-950/10">
+    <div className="pt-12 md:mt-28 md:pt-20 border-t border-espresso-950/10">
       <div className="text-center max-w-xl mx-auto mb-16">
         <span className="text-xs uppercase tracking-[0.3em] text-espresso-950/40 mb-3 block">
           {subtitle}

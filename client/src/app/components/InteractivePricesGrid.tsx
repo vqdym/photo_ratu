@@ -133,7 +133,9 @@ export default function InteractivePricesGrid({
           onDragEnter={() => (dragOverItem.current = index)}
           onDragEnd={onDragEnd}
           onDragOver={(e) => e.preventDefault()}
-          className={`relative mb-12 md:mb-6 ${isEditing ? "cursor-move" : ""} ${
+          className={`relative ${
+            index !== services.length - 1 ? "mb-20 md:mb-24" : ""
+          } ${isEditing ? "cursor-move" : ""} ${
             isArchived ? "opacity-60 transition-opacity" : ""
           }`}
         >
@@ -230,7 +232,7 @@ export default function InteractivePricesGrid({
           )}
         </div>
       )}
-      <div className="flex flex-col gap-12">{renderedPrices}</div>
+      <div className="flex flex-col">{renderedPrices}</div>
       <Modal>
         <Modal.Open opens="warning-window">
           <button id="trigger-warning-modal" className="hidden" type="button" />

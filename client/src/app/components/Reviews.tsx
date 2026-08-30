@@ -33,7 +33,7 @@ export default function Reviews({ review }: ReviewsProps) {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {review.list.map((item: ReviewItem) => (
               <Review
                 key={item.id}

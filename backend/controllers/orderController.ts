@@ -1,4 +1,4 @@
-import { Response, Request, NextFunction } from 'express';
+import type { Response, Request, NextFunction } from 'express';
 
 import Order from '../models/orderModel';
 import {

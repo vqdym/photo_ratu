@@ -4,3 +4,7 @@ export interface LastShoots {
   coverImage: string;
   category: string;
 }
+
+export interface LastShootsData {
+  data: LastShoots[];
+}

@@ -2,6 +2,7 @@ import { jwtCookie } from "../_lib/actions/auth";
 import AddNewPortfolioModal from "./AddNewPortfolioModal";
 import PhotoCardList from "./PhotoCardList";
 import PortfolioFilter from "./PortfolioFilter";
+import NoDataMessage from "./NoDataMessage";
 import { getGallery, getServicesNames } from "../_lib/data-services";
 
 interface PortfolioGalleryProps {
@@ -27,13 +28,16 @@ export default async function PortfolioGallery({
     getServicesNames(),
     getGallery(),
   ]);
+  const noGalleryMessage =
+    lang === "en" ? "No photos available." : "Наразі фотографії відсутні.";
 
   const usedCategories: string[] = Array.from(
     new Set(
       galleries.data.map((item: GalleryItem) => item.category.toLowerCase()),
     ),
   );
-
+  if (!galleries || !services)
+    return <NoDataMessage message={noGalleryMessage} />;
   return (
     <>
       <PortfolioFilter

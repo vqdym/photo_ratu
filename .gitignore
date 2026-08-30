@@ -1,0 +1,11 @@
+.env
+.env.local
+*.env
+
+db-data/
+db_backups/
+
+node_modules/
+client/node_modules/
+server/node_modules/
+client/.next/

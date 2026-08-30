@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import AppError from '../utils/appError';
 
 interface AppErrorType extends Error {

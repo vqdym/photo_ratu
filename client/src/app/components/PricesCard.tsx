@@ -26,7 +26,7 @@ export default function PricesCard({
 }) {
   return (
     <div
-      className={`relative flex flex-col lg:flex-row items-center gap-10 md:gap-12 lg:gap-20 transition-all duration-300 ${
+      className={`relative flex flex-col lg:flex-row items-center gap-4 md:gap-12 lg:gap-20 transition-all duration-300 ${
         index % 2 === 1 ? "lg:flex-row-reverse" : ""
       } ${
         isEditing
@@ -67,7 +67,9 @@ export default function PricesCard({
           {description}
         </span>
 
-        <h3 className="text-3xl md:text-4xl font-light mb-6">{title}</h3>
+        <h3 className="text-3xl md:text-4xl font-light mb-4 md:mb-6">
+          {title}
+        </h3>
 
         <div className="text-3xl font-medium mb-6 md:mb-8 text-espresso-950">
           {price} ₴

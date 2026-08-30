@@ -1,11 +1,14 @@
-import { getLastShoots } from "@/app/_lib/data-services";
 import LastShoot from "./LastShoot";
 import { categoryLabels } from "@/utils/categoryLabels";
-import { LastShoots } from "@/types/LastShoots";
+import { LastShoots, LastShootsData } from "@/types/LastShoots";
 
-export default async function LastShootList({ lang }: { lang: string }) {
-  const lastShoots = await getLastShoots();
-  if (lastShoots.data?.length < 1) return null;
+export default async function LastShootList({
+  lastShoots,
+  lang,
+}: {
+  lastShoots: LastShootsData;
+  lang: string;
+}) {
   return (
     <>
       {lastShoots.data.map((shoot: LastShoots, index: number) => (

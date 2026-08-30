@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import { Model, PopulateOptions } from 'mongoose';
 
 import apiFeatures from '../utils/apiFeatures';

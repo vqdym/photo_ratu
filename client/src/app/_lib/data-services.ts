@@ -4,7 +4,6 @@ import { revalidatePath } from "next/cache";
 import { cache } from "react";
 import { getJWT } from "./actions/auth";
 import { ServiceProps } from "@/types/Service";
-// import Error from "next/error";
 
 export const getGallery = async function (category?: string) {
   try {

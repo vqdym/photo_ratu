@@ -1,4 +1,8 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, {
+  type Request,
+  type Response,
+  type NextFunction,
+} from 'express';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -29,7 +33,7 @@ const limiter = rateLimit({
   windowMs: 30 * 60 * 1000,
   message: 'Too many requests from this IP, please try again later.',
 });
-// app.use('/api', limiter);
+app.use('/api', limiter);
 
 const mongoMiddleware = mongoSanitize();
 const xssMiddleware = xss();
