@@ -50,7 +50,7 @@ class APIFeatures<T> {
 
     if (category) {
       this.query = this.query.find({
-        category: category.split(',').join(' '),
+        category: { $regex: category.split(',').join(' '), $options: 'i' },
       });
     }
     return this;
