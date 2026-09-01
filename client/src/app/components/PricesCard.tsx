@@ -9,7 +9,6 @@ export default function PricesCard({
   description,
   features,
   isEditing,
-  actionMenu,
   buttonText,
   isArchived,
 }: {
@@ -20,7 +19,6 @@ export default function PricesCard({
   price: number;
   features: string[];
   isEditing?: boolean;
-  actionMenu?: React.ReactNode;
   buttonText: string;
   isArchived: boolean;
 }) {
@@ -38,9 +36,6 @@ export default function PricesCard({
         <div className="absolute top-14 left-4 md:top-3 md:left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
           Заархівовано
         </div>
-      )}
-      {isEditing && actionMenu && (
-        <div className="absolute top-6 right-6 z-30">{actionMenu}</div>
       )}
 
       <div className="w-full lg:w-1/2 relative h-[500px] md:h-[650px] overflow-hidden rounded-sm group shadow-md">

@@ -19,10 +19,10 @@ export default function LastShoot({
   return (
     <div
       className={`flex flex-col group bg-white p-6 md:p-8 shadow-xl hover:shadow-2xl transition-shadow duration-500 rounded-sm relative w-full ${
-        isLower ? "md:mt-32" : ""
+        isLower ? "md:mt-26" : ""
       }`}
     >
-      <div className="relative w-full aspect-[4/5] mb-6 h-[60vh] md:h-[50vh] overflow-hidden">
+      <div className="relative w-full aspect-[4/5] mb-6 h-[60vh] md:h-[60vh] overflow-hidden">
         <Image
           src={imgUrl}
           alt={altText}
@@ -39,7 +39,7 @@ export default function LastShoot({
           {category}
         </p>
       </div>
-      <div className={`self-end mt-6 ${!isLower ? "md:mt-37" : ""}`}>
+      <div className={`self-end mt-6 ${!isLower ? "md:mt-32" : ""}`}>
         <ArrowLink path={`${lang}/portfolio`}>
           <span className="border-b border-white/50 group-hover:border-[#e6dfd5] pb-1">
             {lang === "en" ? "view work" : "дивитися роботу"}

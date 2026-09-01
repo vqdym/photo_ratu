@@ -38,7 +38,7 @@ export default function PhotoCard({
             e.stopPropagation();
             handleRemove(imgUrl);
           }}
-          styles="cursor-pointer absolute top-2 right-2 z-20 bg-red-600 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700"
+          styles="cursor-pointer absolute top-2 right-2 z-20 bg-red-600 text-white p-1.5 rounded-full opacity-100 transition-opacity hover:bg-red-700"
         />
       )}
 

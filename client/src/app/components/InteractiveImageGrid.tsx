@@ -161,8 +161,8 @@ export default function InteractiveImageGrid({
               isEditing={isEditing}
               handleRemove={handleRemove}
             />
-            {/* Кнопки переміщення для мобільних пристроїв, де не працює drag-and-drop */}
-            <div className="absolute top-2 left-2 flex gap-1 z-20 md:hidden bg-black/60 p-1 rounded-sm backdrop-blur-sm">
+            {/* Кнопки переміщення для мобільних пристроїв та планшетів, де не працює drag-and-drop */}
+            <div className="absolute top-2 left-2 flex gap-1 z-20 lg:hidden bg-black/60 p-1 rounded-sm backdrop-blur-sm">
               <button
                 type="button"
                 onClick={(e) => {

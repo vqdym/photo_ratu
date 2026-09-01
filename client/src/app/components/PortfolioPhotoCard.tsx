@@ -22,14 +22,14 @@ export default async function PortfolioPhotoCard({
   const categoryText =
     lang === "uk" ? currentCategory?.name : currentCategory?.nameEn;
   return (
-    <div className="relative break-inside-avoid p-6">
+    <div className="relative break-inside-avoid p-6 w-full min-[850px]:w-5/6 min-[1000px]:w-3/4 min-[1100px]:w-2/3 min-[1200px]:w-full min-[850px]:mx-auto">
       {isAdmin && <DeleteButton id={photosession._id} />}
       <Link
         href={`/${lang}
 /portfolio/${photosession._id}`}
-        className="relative flex flex-col bg-white w-full p-4 md:p-6 md:p-8 py-6 md:py-12 overflow-hidden group shadow-xl hover:shadow-2xl transition-shadow duration-500 rounded-sm cursor-pointer"
+        className="relative flex flex-col bg-white p-4 md:p-8 py-6 md:py-12 overflow-hidden group shadow-xl hover:shadow-2xl transition-shadow duration-500 rounded-sm cursor-pointer"
       >
-        <div className="relative w-full h-90 md:h-150 mx-auto overflow-hidden mb-6">
+        <div className="relative w-full h-100 min-[500px]:h-145 min-[600px]:h-135 min-[800px]:h-150 min-[1000px]:h-150 min-[1200px]:h-160 mx-auto overflow-hidden mb-6">
           <Image
             src={photosession.coverImage}
             alt={photosession.category}

@@ -135,21 +135,24 @@ export default function InteractivePricesGrid({
           onDragOver={(e) => e.preventDefault()}
           className={`relative ${
             index !== services.length - 1 ? "mb-20 md:mb-24" : ""
-          } ${isEditing ? "cursor-move" : ""} ${
-            isArchived ? "opacity-60 transition-opacity" : ""
-          }`}
+          } ${isEditing ? "cursor-move" : ""}`}
         >
-          <PricesCard
-            isArchived={isArchived}
-            title={service.name}
-            price={service.price}
-            imageUrl={service.imageUrl}
-            description={service.description}
-            features={service.features}
-            index={index}
-            isEditing={isEditing}
-            buttonText={buttonText}
-            actionMenu={
+          <div className={isArchived ? "opacity-60 transition-opacity" : ""}>
+            <PricesCard
+              isArchived={isArchived}
+              title={service.name}
+              price={service.price}
+              imageUrl={service.imageUrl}
+              description={service.description}
+              features={service.features}
+              index={index}
+              isEditing={isEditing}
+              buttonText={buttonText}
+            />
+          </div>
+
+          {isEditing && (
+            <div className="absolute top-6 right-6 z-30">
               <Menu>
                 <Menu.Toggle />
 
@@ -181,8 +184,8 @@ export default function InteractivePricesGrid({
                   </Menu.Item>
                 </Menu.List>
               </Menu>
-            }
-          />
+            </div>
+          )}
 
           {isEditing && (
             <div className="absolute top-4 left-4 flex gap-1 z-20 md:hidden bg-black/70 p-1.5 rounded-sm backdrop-blur-sm shadow-md">

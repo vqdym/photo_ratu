@@ -16,7 +16,7 @@ export default async function PhotoCardList({
     return <NoDataMessage message="Немає фотографій для цього розділу" />;
 
   return (
-    <div className="columns-1 md:columns-2 max-w-7xl mx-auto">
+    <div className="columns-1 min-[1200px]:columns-2 max-w-7xl mx-auto">
       {gallery.data.map((photosession: Photosession) => (
         <PortfolioPhotoCard
           lang={lang}
