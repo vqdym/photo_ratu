@@ -20,16 +20,16 @@
     "sectionTitle": "What I shoot",
     "list": [
       {
-        "number": "01",
-        "title": "Individual",
-        "description": "Only you, your emotions, and the moment. An individual photoshoot is an expression of self-love, revealing your uniqueness, and capturing your true mood in aesthetic frames.",
-        "altText": "individual photosession photo"
+        "id": 1,
+        "name": "Ira",
+        "category": "Maternity Photoshoot",
+        "text": "The photos are absolutely beautiful. Now it's impossible to choose! Thank you so, so much!"
       },
       {
-        "number": "02",
-        "title": "Couple / Wedding",
-        "description": "About your love, touches, and real feelings. Preserving your unique story with no fake poses, just the two of you and the moment.",
-        "altText": "couple or wedding photosession photo"
+        "id": 2,
+        "name": "Iryna",
+        "category": "Individual Photoshoot",
+        "text": "Thank you so much for these incredibly beautiful photos! You're truly talented! The atmosphere, the photo quality, and the fast editing were all exceptional. I'm so proud of and truly appreciate your work."
       },
       {
         "number": "03",

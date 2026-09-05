@@ -48,6 +48,15 @@ function createSendToken(
 //   createSendToken(adminUser, 201, res);
 // });
 
+// export const deleteAdmin = catchAsync(async (req, res, next) => {
+//   await Admin.deleteMany();
+
+//   res.status(204).json({
+//     status: 'success',
+//     data: null,
+//   });
+// });
+
 export const login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
