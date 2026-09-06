@@ -58,6 +58,10 @@ services:
         TIMESTAMP=$$(date +'%Y-%m-%d');
         echo 'Роблю бекап бази даних...';
         mongodump --uri='mongodb://database:27017/photo_ratu' --out=/backups/dump_$$TIMESTAMP;
+        
+        echo 'Видаляю бекапи старші за 7 днів...';
+        find /backups -maxdepth 1 -name 'dump_*' -type d -mtime +7 -exec rm -rf {} +;
+        
         sleep 86400;
       done
       "
