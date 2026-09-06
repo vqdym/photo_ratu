@@ -64,7 +64,7 @@ export default function Services({ dict }: ServicesProps) {
             );
           })}
         </div>
-        <div className="relative z-20 flex justify-center pb-[calc(6vw+5rem)] text-center">
+        <div className="relative z-20 flex justify-center px-4 pb-[calc(6vw+5rem)] text-center">
           <p className="text-lg text-espresso-950/70 font-light leading-relaxed">
             {dict.services.actionText}
             <Link

@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState, useEffect, useRef } from "react";
 import Thumbnail from "./Thumbnail";
+import SpinnerMini from "./SpinnerMini";
 
 interface LightboxSliderProps {
   images: string[];
@@ -14,13 +15,16 @@ export default function LightboxSlider({
   initialIndex,
 }: LightboxSliderProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
+  const [isImageLoading, setIsImageLoading] = useState(true);
   const [prevInitialIndex, setPrevInitialIndex] = useState(initialIndex);
 
   const thumbnailRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
 
   if (initialIndex !== prevInitialIndex) {
     setPrevInitialIndex(initialIndex);
     setCurrentIndex(initialIndex);
+    setIsImageLoading(true);
   }
 
   useEffect(() => {
@@ -49,19 +53,55 @@ export default function LightboxSlider({
   }, [images.length]);
 
   const handleNext = () => {
+    setIsImageLoading(true);
     setCurrentIndex((prev) => (prev + 1) % images.length);
   };
 
   const handlePrev = () => {
+    setIsImageLoading(true);
     setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
+  };
+
+  const handleThumbnailChange = (index: number) => {
+    if (index === currentIndex) return;
+    setIsImageLoading(true);
+    setCurrentIndex(index);
+  };
+
+  const handleTouchStart = (event: React.TouchEvent<HTMLDivElement>) => {
+    const touch = event.changedTouches[0];
+    touchStart.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchEnd = (event: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStart.current) return;
+
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - touchStart.current.x;
+    const deltaY = touch.clientY - touchStart.current.y;
+    touchStart.current = null;
+
+    if (Math.abs(deltaX) < 50 || Math.abs(deltaX) <= Math.abs(deltaY)) {
+      return;
+    }
+
+    if (deltaX < 0) {
+      handleNext();
+    } else {
+      handlePrev();
+    }
   };
 
   if (!images) return null;
   if (images.length < 1) return null;
 
   return (
-    <div className="relative w-full h-[85vh] md:h-[95vh] flex flex-col items-center justify-between py-4">
-      <div className="relative w-full flex-1 flex items-center justify-center min-h-0 md:mb-4 group">
+    <div className="relative flex h-[85dvh] max-h-[calc(100dvh-2rem)] w-full min-w-0 flex-col items-center justify-between overflow-hidden py-4 md:h-[95dvh]">
+      <div
+        className="relative flex min-h-0 w-full min-w-0 flex-1 touch-pan-y items-center justify-center md:mb-4"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <button
           onClick={handlePrev}
           className="cursor-pointer absolute left-0 md:left-10 z-50 p-3 bg-espresso-950/30 md:bg-espresso-950/50 text-white rounded-full hover:bg-espresso-950 transition-colors"
@@ -82,14 +122,19 @@ export default function LightboxSlider({
           </svg>
         </button>
 
-        <div className="relative w-full h-full">
+        <div className="relative h-full w-full min-w-0 max-w-full">
+          {isImageLoading && (
+            <div className="absolute inset-0 z-10 flex items-center justify-center">
+              <SpinnerMini />
+            </div>
+          )}
           <Image
             src={images[currentIndex]}
             alt="Gallery image"
             fill
             className="object-contain select-none"
             sizes="100vw"
-            priority
+            onLoad={() => setIsImageLoading(false)}
           />
         </div>
 
@@ -117,7 +162,7 @@ export default function LightboxSlider({
       <Thumbnail
         images={images}
         currentIndex={currentIndex}
-        onCurrentIndex={setCurrentIndex}
+        onCurrentIndex={handleThumbnailChange}
         thumbnailRefs={thumbnailRefs}
       />
     </div>

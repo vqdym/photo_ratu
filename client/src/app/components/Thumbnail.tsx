@@ -14,7 +14,7 @@ export default function Thumbnail({
   thumbnailRefs,
 }: ThumbnailProps) {
   return (
-    <div className="max-w-5xl h-20 md:h-24 px-2 shrink-0">
+    <div className="h-20 w-full max-w-5xl shrink-0 px-2 md:h-24">
       <div className="flex gap-2 md:gap-3 px-2 overflow-x-auto snap-x items-center h-full w-full scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {images.map((image, index) => (
           <button

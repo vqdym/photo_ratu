@@ -123,7 +123,7 @@ function Window({ children, name }: { children: ReactNode; name: string }) {
         </svg>
       </button>
 
-      <div className="relative max-h-screen max-w-7xl w-full flex justify-center items-center">
+      <div className="relative flex max-h-[calc(100dvh-2rem)] w-full min-w-0 max-w-7xl items-center justify-center overflow-hidden">
         {children}
       </div>
     </div>,

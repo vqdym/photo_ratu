@@ -193,7 +193,7 @@ export default function InteractiveImageGrid({
   });
 
   return (
-    <div>
+    <div className="w-full min-w-0 overflow-hidden">
       <Modal>
         {isAdmin && (
           <div className="flex justify-end gap-4 mb-6">
@@ -354,14 +354,14 @@ export default function InteractiveImageGrid({
 
       <Modal>
         {isEditing ? (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 w-full">
+          <div className="grid w-full min-w-0 grid-cols-2 gap-3 md:grid-cols-3 md:gap-4 lg:grid-cols-4">
             {renderedPhotos}
           </div>
         ) : (
           <Masonry
             breakpointCols={breakpointColumnsObj}
-            className="flex w-auto gap-6"
-            columnClassName="bg-clip-padding flex flex-col gap-6"
+            className="flex w-full min-w-0 gap-3 md:gap-6"
+            columnClassName="flex min-w-0 flex-col gap-3 bg-clip-padding md:gap-6"
           >
             {renderedPhotos}
           </Masonry>
