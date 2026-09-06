@@ -27,7 +27,10 @@ export default async function PricingVisualPage({ params }: DictProps) {
           titlePrice={dict.prices.titlePrice}
         />
         <Suspense fallback={<Spinner />}>
-          <PricesList buttonText={dict.prices.buttonRes} />
+          <PricesList
+            buttonText={dict.prices.buttonRes}
+            lang={resolvedParams.lang}
+          />
         </Suspense>
         <PricesConditions
           title={dict.prices.conditionsTitle}

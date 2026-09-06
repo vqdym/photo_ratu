@@ -19,9 +19,7 @@ export const metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode;
-  params: Promise<{
-    lang: "uk" | "en";
-  }>;
+  params: Promise<{ lang: string }>;
 }
 
 export default async function RootLayout({
@@ -29,15 +27,16 @@ export default async function RootLayout({
   params,
 }: RootLayoutProps) {
   const resolvedParams = await params;
-  const dict = await getDictionary(resolvedParams.lang);
+  const locale = resolvedParams.lang === "en" ? "en" : "uk";
+  const dict = await getDictionary(locale);
   return (
-    <html lang={resolvedParams.lang}>
+    <html lang={locale}>
       <body
         className={`${montserrat.className} text-gray-50 min-h-screen flex flex-col`}
       >
         <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer lang={resolvedParams.lang} dict={dict.footer} />
+        <main className="grow">{children}</main>
+        <Footer lang={locale} dict={dict.footer} />
       </body>
     </html>
   );

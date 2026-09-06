@@ -3,6 +3,7 @@ export default function PortfolioHeader({
 }: {
   dict: {
     title: string;
+    subtitle: string;
     description: string;
   };
 }) {

@@ -7,12 +7,19 @@ interface ServiceItem {
   altText: string;
 }
 
+interface LegacyServiceItem {
+  id: number;
+  name: string;
+  category: string;
+  text: string;
+}
+
 interface ServicesProps {
   dict: {
     services: {
       servicesText: string;
       sectionTitle: string;
-      list: ServiceItem[];
+      list: (ServiceItem | LegacyServiceItem)[];
     };
   };
 }
@@ -36,17 +43,21 @@ export default function Services({ dict }: ServicesProps) {
         </div>
 
         <div className="flex flex-col md:gap-6">
-          {dict.services.list.map((item: ServiceItem, index: number) => (
-            <Service
-              key={item.number}
-              number={item.number}
-              name={item.title}
-              description={item.description}
-              imgUrl={servicePhotos[index]}
-              altText={item.altText}
-              imagePosition={index % 2 === 0 ? "right" : "left"}
-            />
-          ))}
+          {dict.services.list.map((item, index) => {
+            const serviceItem = item as ServiceItem;
+
+            return (
+              <Service
+                key={serviceItem.number}
+                number={serviceItem.number}
+                name={serviceItem.title}
+                description={serviceItem.description}
+                imgUrl={servicePhotos[index]}
+                altText={serviceItem.altText}
+                imagePosition={index % 2 === 0 ? "right" : "left"}
+              />
+            );
+          })}
         </div>
       </div>
     </section>
