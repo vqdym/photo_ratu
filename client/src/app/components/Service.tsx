@@ -10,6 +10,7 @@ export default function Service({
   imgUrl,
   altText,
   imagePosition,
+  isLast,
 }: {
   number: string;
   name: string;
@@ -17,6 +18,7 @@ export default function Service({
   imgUrl: string;
   altText: string;
   imagePosition: string;
+  isLast?: boolean;
 }) {
   return (
     <motion.div
@@ -24,7 +26,7 @@ export default function Service({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
       transition={{ duration: 0.8, ease: "easeOut" }}
-      className="mb-40 md:mb-32"
+      className={isLast ? "mb-12" : "mb-40 md:mb-32"}
     >
       <div className="flex flex-col md:grid md:grid-cols-2 md:p-6 lg:p-12 items-center gap-10 md:gap-12 lg:gap-20">
         <div

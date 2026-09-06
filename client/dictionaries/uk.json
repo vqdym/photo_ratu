@@ -18,6 +18,8 @@
   "services": {
     "servicesText": "Послуги",
     "sectionTitle": "Що я знімаю",
+    "actionText": "Більше послуг та детальну інформацію можна знайти у розділі",
+    "actionLink": "ціни",
     "list": [
       {
         "number": "01",

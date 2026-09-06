@@ -18,24 +18,26 @@
   "services": {
     "servicesText": "Services",
     "sectionTitle": "What I shoot",
+    "actionText": "More services and detailed information can be found in the",
+    "actionLink": "Pricing section",
     "list": [
       {
-        "id": 1,
-        "name": "Ira",
-        "category": "Maternity Photoshoot",
-        "text": "The photos are absolutely beautiful. Now it's impossible to choose! Thank you so, so much!"
+        "number": "01",
+        "title": "Individual",
+        "description": "Just you, your emotions, and the moment. An individual photoshoot is a celebration of self-love, revealing your unique personality and preserving genuine emotions in timeless, aesthetic images.",
+        "altText": "individual photoshoot"
       },
       {
-        "id": 2,
-        "name": "Iryna",
-        "category": "Individual Photoshoot",
-        "text": "Thank you so much for these incredibly beautiful photos! You're truly talented! The atmosphere, the photo quality, and the fast editing were all exceptional. I'm so proud of and truly appreciate your work."
+        "number": "02",
+        "title": "Couple / Wedding",
+        "description": "A story of your love, your touch, and your genuine connection. Preserving your unique story with natural, heartfelt moments instead of posed perfection—just the two of you and the moment.",
+        "altText": "wedding or couple photoshoot"
       },
       {
         "number": "03",
         "title": "Family",
-        "description": "Warm hugs, genuine laughter, and the real moments of your family. Preserving the best memories of how happy you are together in lively and warm frames.",
-        "altText": "family photosession photo"
+        "description": "Warm hugs, genuine laughter, and the real moments that make your family unique. Capturing the memories of your happiest times together in natural, heartfelt photographs.",
+        "altText": "family photoshoot"
       }
     ]
   },
@@ -56,21 +58,21 @@
     "list": [
       {
         "id": 1,
-        "name": "Olena and Maksym",
-        "category": "Wedding photoshoot",
-        "text": "It was an incredible experience! The photos exceeded all our expectations. Every shot looks like a magazine cover, yet is so alive and sincere. Thank you for preserving these memories for a lifetime."
+        "name": "Ira",
+        "category": "Maternity Photoshoot",
+        "text": "The photos are absolutely beautiful. Now it's impossible to choose! Thank you so, so much!"
       },
       {
         "id": 2,
-        "name": "Anna",
-        "category": "Individual",
-        "text": "I never liked myself in photos, but after this shoot, my self-esteem skyrocketed. A very comfortable atmosphere, absolutely no tension, and the result just blew up my social media!"
+        "name": "Iryna",
+        "category": "Individual Photoshoot",
+        "text": "Thank you so much for these incredibly beautiful photos! You're truly talented! The atmosphere, the photo quality, and the fast editing were all exceptional. I'm so proud of and truly appreciate your work."
       },
       {
         "id": 3,
         "name": "The Kovalchuk Family",
         "category": "Love Story / Family",
-        "text": "Catching our restless child in the frame seemed impossible, but you worked some magic. Very warm, cinematic photos. True art that we will hang on the walls of our home."
+        "text": "Capturing our energetic little one seemed impossible, but you worked magic. The photos are incredibly warm and cinematic. A true work of art that we'll proudly display on the walls of our home."
       }
     ]
   },
