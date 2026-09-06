@@ -33,7 +33,12 @@ export const getGalleryById = cache(async function (id: string) {
     return response.data.data;
   } catch (err: any) {
     console.error("Помилка getGalleryById:", err.response?.data || err.message);
-    return null;
+
+    if (axios.isAxiosError(err) && err.response?.status === 404) {
+      return null;
+    }
+
+    throw new Error("Не вдалося завантажити галерею");
   }
 });
 

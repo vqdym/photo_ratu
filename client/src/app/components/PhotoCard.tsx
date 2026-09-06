@@ -24,7 +24,7 @@ export default function PhotoCard({
       className={`relative overflow-hidden bg-black/5 group ${
         isEditing
           ? "aspect-square cursor-grab active:cursor-grabbing border-2 border-transparent hover:border-espresso-950 transition-colors"
-          : "cursor-pointer mb-6 break-inside-avoid"
+          : "min-h-64 cursor-pointer mb-6 break-inside-avoid md:min-h-80"
       }`}
     >
       {!IsImageLoaded && (
@@ -56,6 +56,7 @@ export default function PhotoCard({
         height={0}
         sizes="100vw"
         onLoad={() => setIsImageLoaded(true)}
+        onError={() => setIsImageLoaded(true)}
         style={{ width: "100%", height: isEditing ? "100%" : "auto" }}
         className={`w-full transition-all duration-700 ${
           isEditing

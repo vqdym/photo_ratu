@@ -194,6 +194,12 @@ export default function InteractiveImageGrid({
 
   return (
     <div className="w-full min-w-0 overflow-hidden">
+      {photos.length === 0 && (
+        <div className="flex min-h-64 items-center justify-center text-sm text-espresso-950/60">
+          У цій галереї поки немає фотографій.
+        </div>
+      )}
+
       <Modal>
         {isAdmin && (
           <div className="flex justify-end gap-4 mb-6">

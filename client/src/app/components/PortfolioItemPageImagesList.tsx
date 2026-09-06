@@ -14,11 +14,10 @@ export default async function PortfolioItemPageImagesList({
   if (!data) {
     notFound();
   }
+
+  const images = Array.isArray(data.images) ? data.images : [];
+
   return (
-    <InteractiveImageGrid
-      images={data.images}
-      isAdmin={isAdmin}
-      galleryId={id}
-    />
+    <InteractiveImageGrid images={images} isAdmin={isAdmin} galleryId={id} />
   );
 }
