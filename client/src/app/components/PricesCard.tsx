@@ -1,5 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import SpinnerMini from "./SpinnerMini";
 
 export default function PricesCard({
   index,
@@ -22,6 +26,8 @@ export default function PricesCard({
   buttonText: string;
   isArchived: boolean;
 }) {
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
+
   return (
     <div
       className={`relative flex flex-col lg:flex-row items-center gap-4 md:gap-12 lg:gap-20 transition-all duration-300 ${
@@ -39,14 +45,24 @@ export default function PricesCard({
       )}
 
       <div className="w-full lg:w-1/2 relative h-[500px] md:h-[650px] overflow-hidden rounded-sm group shadow-md">
+        {!isImageLoaded && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center bg-beige-50/40">
+            <SpinnerMini
+              w="5"
+              h="5"
+              className="border-espresso-950/20 border-t-espresso-950"
+            />
+          </div>
+        )}
         <Image
           src={imageUrl}
           alt="Фото з фотосесії"
           fill
           sizes="(max-width: 1024px) 100vw, 50vw"
-          className={`object-cover transition-transform duration-700 ${
+          onLoad={() => setIsImageLoaded(true)}
+          className={`object-cover transition-[opacity,transform] duration-700 ${
             !isEditing ? "group-hover:scale-105" : ""
-          }`}
+          } ${isImageLoaded ? "opacity-100" : "opacity-0"}`}
         />
         {isEditing && (
           <div className="absolute inset-0 bg-espresso-950/20 hidden md:flex items-center justify-center pointer-events-none">

@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
+import SpinnerMini from "./SpinnerMini";
 
 interface AboutMeProps {
   about: {
@@ -23,6 +25,11 @@ interface AboutMeProps {
 }
 
 export default function AboutMe({ about }: AboutMeProps) {
+  const [loadedImages, setLoadedImages] = useState({
+    main: false,
+    detail: false,
+  });
+
   return (
     <div className="max-w-7xl mx-auto w-full">
       <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
@@ -34,23 +41,51 @@ export default function AboutMe({ about }: AboutMeProps) {
           className="w-full lg:w-1/2 relative h-137.5 md:h-162.5"
         >
           <div className="absolute top-0 left-0 w-7/8 md:w-3/4 h-100 md:h-137.5 z-10 overflow-hidden shadow-sm">
+            {!loadedImages.main && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-beige-50/40">
+                <SpinnerMini
+                  w="5"
+                  h="5"
+                  className="border-espresso-950/20 border-t-espresso-950"
+                />
+              </div>
+            )}
             <Image
               src="/images/aboutme/IMG_ABOUT1.PNG"
               alt="Main portrait"
               fill
               priority
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              onLoad={() =>
+                setLoadedImages((prev) => ({ ...prev, main: true }))
+              }
+              className={`object-cover transition-opacity duration-700 ${
+                loadedImages.main ? "opacity-100" : "opacity-0"
+              }`}
             />
           </div>
 
           <div className="absolute bottom-0 right-0 w-[60%] h-65 md:h-87.5 z-20 border-10 border-beige-50 overflow-hidden shadow-xl bg-espresso-200">
+            {!loadedImages.detail && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center bg-beige-50/40">
+                <SpinnerMini
+                  w="5"
+                  h="5"
+                  className="border-espresso-950/20 border-t-espresso-950"
+                />
+              </div>
+            )}
             <Image
               src="https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000&auto=format&fit=crop"
               alt="Detail"
               fill
               sizes="(max-width: 1024px) 50vw, 33vw"
-              className="object-cover"
+              onLoad={() =>
+                setLoadedImages((prev) => ({ ...prev, detail: true }))
+              }
+              className={`object-cover transition-opacity duration-700 ${
+                loadedImages.detail ? "opacity-100" : "opacity-0"
+              }`}
             />
           </div>
         </motion.div>
