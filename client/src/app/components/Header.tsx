@@ -60,7 +60,7 @@ export default function Header() {
           shouldBeDark ? "text-beige-100" : "text-beige-300"
         }`}
       >
-        <Logo />
+        <Logo lang={lang} />
         <Nav
           lang={lang}
           isMenuOpen={isMenuOpen}

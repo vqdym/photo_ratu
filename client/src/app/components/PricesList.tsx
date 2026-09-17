@@ -22,6 +22,7 @@ export default async function PricesList({
   return (
     <div className="space-y-24">
       <InteractivePricesGrid
+        lang={lang}
         buttonText={buttonText}
         services={services}
         isAdmin={isAdmin}

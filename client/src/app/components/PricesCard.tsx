@@ -6,9 +6,11 @@ import { useState } from "react";
 import SpinnerMini from "./SpinnerMini";
 
 export default function PricesCard({
+  lang,
   index,
   imageUrl,
   title,
+  titleEn,
   price,
   description,
   features,
@@ -16,9 +18,11 @@ export default function PricesCard({
   buttonText,
   isArchived,
 }: {
+  lang: string;
   index: number;
   imageUrl: string;
   title: string;
+  titleEn: string;
   description: string;
   price: number;
   features: string[];
@@ -27,7 +31,9 @@ export default function PricesCard({
   isArchived: boolean;
 }) {
   const [isImageLoaded, setIsImageLoaded] = useState(false);
-
+  console.log(titleEn);
+  console.log(lang);
+  console.log(title);
   return (
     <div
       className={`relative flex flex-col lg:flex-row items-center gap-4 md:gap-12 lg:gap-20 transition-all duration-300 ${
@@ -39,7 +45,7 @@ export default function PricesCard({
       }`}
     >
       {isArchived && (
-        <div className="absolute top-14 left-4 md:top-3 md:left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
+        <div className="absolute top-8 left-4 md:top-3 md:left-4 z-10 bg-espresso-950 text-white text-xs font-medium uppercase tracking-widest px-3 py-1 rounded-sm shadow-md">
           Заархівовано
         </div>
       )}
@@ -79,7 +85,7 @@ export default function PricesCard({
         </span>
 
         <h3 className="text-3xl md:text-4xl font-light mb-4 md:mb-6">
-          {title}
+          {lang === "uk" ? title : titleEn}
         </h3>
 
         <div className="text-3xl font-medium mb-6 md:mb-8 text-espresso-950">

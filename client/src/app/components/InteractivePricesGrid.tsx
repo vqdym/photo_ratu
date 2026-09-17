@@ -16,10 +16,12 @@ export default function InteractivePricesGrid({
   services: initialServices,
   isAdmin,
   buttonText,
+  lang,
 }: {
   services: ServiceProps[];
   isAdmin: boolean;
   buttonText: string;
+  lang: string;
 }) {
   const [isEditing, setIsEditing] = useState(false);
   const [prevInitialServices, setPrevInitialServices] =
@@ -46,7 +48,6 @@ export default function InteractivePricesGrid({
     handleSort(dragItem, dragOverItem, services, setServices);
   };
 
-  // Функція для переміщення карток цін кнопками на мобільних
   const moveService = (index: number, direction: "up" | "down") => {
     const newIndex = direction === "up" ? index - 1 : index + 1;
     if (newIndex < 0 || newIndex >= services.length) return;
@@ -139,8 +140,10 @@ export default function InteractivePricesGrid({
         >
           <div className={isArchived ? "opacity-60 transition-opacity" : ""}>
             <PricesCard
+              lang={lang}
               isArchived={isArchived}
               title={service.name}
+              titleEn={service.nameEn}
               price={service.price}
               imageUrl={service.imageUrl}
               description={service.description}
